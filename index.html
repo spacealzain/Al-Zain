@@ -1,0 +1,497 @@
+nona<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى أميرتي </title>
+  
+    <!-- Fonts - استايل الزين (Cairo & Manrope) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-body: #F3F5F4;
+            --text-main: #1A3C34;
+            --accent-pink: #E9B2B2;
+            --accent-gold: #D4AF37;
+            --radius-xl: 32px;
+            --shadow-card: 0 10px 40px rgba(0,0,0,0.03);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Cairo', 'Manrope', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow: hidden; 
+            direction: rtl;
+        }
+
+        /* --- شاشة الحماية الزجاجية --- */
+        #password-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fdf2f2;
+            transition: all 0.8s ease-in-out;
+        }
+
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(60px); z-index: -1;
+            animation: float 10s infinite alternate;
+        }
+        .blob-1 { width: 400px; height: 400px; background: #ffe4e6; top: -100px; left: -100px; }
+        .blob-2 { width: 350px; height: 350px; background: #e0f2f1; bottom: -50px; right: -50px; animation-delay: -2s; }
+
+        @keyframes float {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        .pass-card {
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px 40px;
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .input-wrapper { position: relative; width: 100%; margin: 25px 0; }
+
+        #passInput {
+            width: 100%; padding: 18px; border-radius: 20px;
+            border: 1px solid rgba(26, 60, 52, 0.1); background: rgba(255, 255, 255, 0.8);
+            text-align: center; font-size: 22px; font-weight: 700; color: var(--text-main);
+            outline: none; transition: 0.3s;
+        }
+        #passInput:focus { border-color: var(--accent-pink); box-shadow: 0 0 20px rgba(233, 178, 178, 0.2); }
+
+        .toggle-btn {
+            position: absolute; left: 15px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; opacity: 0.5; font-size: 18px;
+        }
+
+        .btn-unlock {
+            background: var(--text-main); color: white; border: none;
+            padding: 15px 50px; border-radius: 100px; font-weight: 800;
+            cursor: pointer; transition: var(--transition);
+        }
+        .btn-unlock:hover { transform: translateY(-3px); background: var(--accent-pink); }
+
+        /* --- محتوى الموقع الرئيسي --- */
+        #main-wrapper {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .reveal-visible { opacity: 1; transform: translateY(0); }
+
+        .photo-floating { animation: float-photo 6s ease-in-out infinite; }
+        @keyframes float-photo {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(1deg); }
+        }
+
+        .heart-particle {
+            position: fixed; pointer-events: none; z-index: 100;
+            animation: heart-fly 4s ease-out forwards;
+        }
+        @keyframes heart-fly {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--tr)); opacity: 0; }
+        }
+
+        .glass-love-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: var(--transition);
+        }
+        .glass-love-card:hover { transform: translateY(-15px); background: rgba(255, 255, 255, 0.9); }
+
+        .click-heart {
+            position: absolute; color: var(--accent-pink); pointer-events: none;
+            animation: click-anim 1s ease-out forwards; z-index: 9999;
+        }
+        @keyframes click-anim {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -150%) scale(2); opacity: 0; }
+        }
+
+        .vinyl-spin { animation: spin 4s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .timeline-path {
+            position: absolute; top: 0; bottom: 0; left: 50%; width: 2px;
+            background: linear-gradient(to bottom, transparent, var(--text-main) 10%, var(--text-main) 90%, transparent);
+            transform: translateX(-50%); opacity: 0.1;
+        }
+
+        @keyframes pulse-mic {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .pulse-mic { animation: pulse-mic 2s infinite ease-in-out; }
+    </style>
+</head>
+<body class="selection:bg-pink-100">
+
+    <!-- 1. شاشة الحماية (الباسورد) -->
+    <section id="password-screen">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="pass-card">
+            <div style="font-size: 50px; color: var(--accent-pink); margin-bottom: 20px;"><i class="fas fa-heart"></i></div>
+            <h2 class="font-bold text-2xl mb-2">هذا المكان لنا فقط</h2>
+            <p class="text-gray-500 text-sm">اكتبي التاريخ السري يانور عيب بابا.</p>
+            
+            <div class="input-wrapper">
+                <input type="password" id="passInput" placeholder="بحبك يا حبيبتي.">
+                <i class="fas fa-eye toggle-btn" id="toggleIcon" onclick="togglePassword()"></i>
+            </div>
+
+            <button class="btn-unlock" id="unlockBtn" onclick="checkPassword()">افتحي قلبي</button>
+            <p id="error-msg" class="text-red-400 mt-5 hidden font-bold text-sm">
+                التاريخ خطأ.. ركزي يا روحي ❤️
+            </p>
+        </div>
+    </section>
+
+    <!-- 2. محتوى الموقع الرئيسي -->
+    <div id="main-wrapper">
+        <main id="main-content" class="pb-20">
+            
+            <!-- مشغل موسيقى الخلفية -->
+            <div class="fixed bottom-6 left-6 z-[500]">
+                <button onclick="handleMusic()" class="relative group">
+                    <div id="vinyl" class="w-16 h-16 bg-zinc-900 rounded-full border-4 border-zinc-800 flex items-center justify-center shadow-2xl transition-transform hover:scale-110">
+                        <div class="w-6 h-6 bg-pink-200 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i id="musicIcon" class="fas fa-play"></i>
+                    </div>
+                </button>
+                <!-- ضع رابط الموسيقى الخلفية هنا (مثلاً: song.mp3) -->
+                <audio id="loveMusic" loop>
+                    <source src="YOUR_SONG_URL_HERE.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+
+            <header class="flex justify-between items-center p-8 max-w-7xl mx-auto">
+                <div class="logo font-black text-2xl tracking-tight text-emerald-900">𝐴𝑙-𝑍𝑎𝑖𝑛 | Nona</div>
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest">حبيبت محمد والله.</div>
+            </header>
+
+            <section class="min-h-[80vh] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+                <div class="photo-floating relative mb-12">
+                    <div class="w-[300px] h-[300px] md:w-[450px] md:h-[450px] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl relative z-10">
+                        <!-- ضع رابط صورتكم هنا -->
+                        <img src="nona.jpg" alt="noha al-zain" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -inset-4 bg-pink-200/20 blur-2xl rounded-[4rem] -z-10 animate-pulse"></div>
+                    <i class="fas fa-heart absolute -top-5 -left-5 text-pink-400 text-3xl"></i>
+                </div>
+
+                <div class="text-center reveal">
+                    <span class="text-xs font-black tracking-[0.4em] text-emerald-800/40 uppercase mb-4 block">أنتِ كل حياتي</span>
+                    <h1 class="text-5xl md:text-7xl font-black text-emerald-900 mb-6 leading-tight">إلى حبيبت الزين النونه.</h1>
+                    <p class="text-lg md:text-2xl font-semibold text-pink-400">"وإنكِ النبضُ الذي بهِ أحيا يا نونه"</p>
+                </div>
+            </section>
+
+            <!-- عداد الحب -->
+            <section class="py-16 px-6 reveal">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white/60 backdrop-blur-xl border border-white/40 p-10 rounded-[3rem] shadow-sm text-center">
+                        <h3 class="text-2xl font-black text-emerald-900 mb-8">نحن معاً منذ..</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="flex flex-col"><span id="days" class="text-4xl font-black">0</span><span class="text-xs font-bold text-gray-400 mt-2">يوم</span></div>
+                            <div class="flex flex-col"><span id="hours" class="text-4xl font-black">0</span><span class="text-xs font-bold text-gray-400 mt-2">ساعة</span></div>
+                            <div class="flex flex-col"><span id="minutes" class="text-4xl font-black">0</span><span class="text-xs font-bold text-gray-400 mt-2">دقيقة</span></div>
+                            <div class="flex flex-col"><span id="seconds" class="text-4xl font-black">0</span><span class="text-xs font-bold text-gray-400 mt-2">ثانية</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- لماذا أعشقك -->
+            <section class="py-24 px-6 reveal overflow-hidden">
+                <div class="max-w-6xl mx-auto text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-black text-emerald-900">لماذا أعشقكِ ؟</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 px-4 max-w-6xl mx-auto">
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center">
+                        <i class="fas fa-smile-beam text-6xl text-pink-300 mb-8"></i>
+                        <h4 class="font-black text-emerald-900 mb-4">ضحكتكِ</h4>
+                        <p class="text-sm text-gray-500 font-semibold italic">انا بحب ضحكتك اوي وبحب اشوفك مبسوطة.</p>
+                    </div>
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center">
+                        <i class="fas fa-eye text-6xl text-emerald-700 mb-8"></i>
+                        <h4 class="font-black text-emerald-900 mb-4">عيونكِ</h4>
+                        <p class="text-sm text-gray-500 font-semibold italic"> عيونك سحراني يا نونه والله.</p>
+                    </div>
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center">
+                        <i class="fas fa-hand-holding-heart text-6xl text-pink-400 mb-8"></i>
+                        <h4 class="font-black text-emerald-900 mb-4">حنيتكِ</h4>
+                        <p class="text-sm text-gray-500 font-semibold italic">بين يديكِ يزول كل تعبي.</p>
+                    </div>
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center">
+                        <i class="fas fa-sparkles text-6xl text-amber-400 mb-8"></i>
+                        <h4 class="font-black text-emerald-900 mb-4">روحكِ</h4>
+                        <p class="text-sm text-gray-500 font-semibold italic">روحك حلوة اوي يا حبيبتي وكفاية إنك سالكة.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- التواريخ -->
+            <section class="py-24 px-6 relative reveal">
+                <div class="max-w-4xl mx-auto relative">
+                    <div class="timeline-path hidden md:block"></div>
+                    <div class="text-center mb-20"><h2 class="text-4xl font-black text-emerald-900">محطات رحلتنا</h2></div>
+                    <div class="space-y-24">
+                        <div class="flex flex-col md:flex-row items-center gap-12">
+                            <div class="md:w-1/2 text-center md:text-left">
+                                <div class="bg-white/60 p-8 rounded-[2.5rem] border-r-4 border-emerald-900 shadow-sm">
+                                    <span class="text-xs font-black text-pink-400 bg-pink-50 px-4 py-1 rounded-full mb-3 inline-block">23 أكتوبر 2024</span>
+                                    <h4 class="text-xl font-bold text-emerald-900 mb-2">أول كلمة أول لقاء</h4>
+                                    <p class="text-sm text-gray-500 italic">في هذا اليوم ، دخلتِ حياتي بكلمة.</p>
+                                </div>
+                            </div>
+                            <div class="hidden md:flex w-12 h-12 bg-emerald-900 text-white rounded-full items-center justify-center z-10 border-4 border-white shadow-lg"><i class="fas fa-star text-xs"></i></div>
+                            <div class="md:w-1/2"></div>
+                        </div>
+                        <div class="flex flex-col md:flex-row-reverse items-center gap-12">
+                            <div class="md:w-1/2 text-center md:text-right">
+                                <div class="bg-white/60 p-8 rounded-[2.5rem] border-l-4 border-emerald-900 shadow-sm">
+                                    <span class="text-xs font-black text-pink-400 bg-pink-50 px-4 py-1 rounded-full mb-3 inline-block">12 يونيو 2025</span>
+                                    <h4 class="text-xl font-bold text-emerald-900 mb-2"> اعتراف قلب الزين الجبروت</h4>
+                                    <p class="text-sm text-gray-500 italic">اليوم الذي نطق فيه قلبي بكلمة "بحبكِ".</p>
+                                </div>
+                            </div>
+                            <div class="hidden md:flex w-12 h-12 bg-pink-300 text-white rounded-full items-center justify-center z-10 border-4 border-white shadow-lg animate-pulse"><i class="fas fa-heart text-xs"></i></div>
+                            <div class="md:w-1/2"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- رسالة الحب -->
+            <section class="py-24 px-6 reveal">
+                <div class="max-w-4xl mx-auto text-center bg-emerald-900 p-12 md:p-20 rounded-[4rem] shadow-2xl relative overflow-hidden">
+                    <i class="fas fa-feather-alt text-9xl text-white/5 absolute top-10 right-10"></i>
+                    <h3 class="text-3xl font-black text-pink-100 mb-10">Massage Al-Zain</h3>
+                    <p class="text-xl md:text-3xl font-bold leading-loose text-white/90 italic">
+                        حبيبتي وأميرتي الغالية،<br><br>
+حبيبتي وبنتي وصحبتي و اختي وزميلتي وسري وحياتي كلها ، حابب اقولك إني بحبك اوي يا نور عيوني ومستعد اعمل أي حاجة علشان تكوني مبسوطة يا حبيبي والله يابت يا نهى انا مضغوط ضغطة ما يعلم بيها إلا ربنا بس انا حابب اتعب علشانك لأنك تستاهلي لأن طلاما انتي المكسب بتاعي بعد التعب ده فأنا مستعد احرق بنزين و ازود السرعة وازود الشغل واضغط علي نفسي علشان خاطر تكوني معايا وفي حضني انتي بجد متعرفيش انا بحبك قد إيه انا بجد بحب اوي حب فوق ما انتي تتخيلي انا ببقا مبسوط اوي بجد وانتي مبسوطة وفرحانة.
+
+                      
+ساعات بضايق منك الحقيقة بسبب ان ممكن تفكيرك فيا يجيبك إني ممكن اكلم بنت أو اخون أو هكذا وتقومي ساكته مره واحده وتقلبي وشك وتخدي جنبك ، طب ليه كل ده وانا اصلا معملتش حاجه ومليش ماضي أو خونتك قبل كده أو طالع عليا سُمعة مش كويسة ولو الدنيا كلها عارفة مين محمد خالد فأنتي اكتر واحده عارفة مين محمد فثقي فيا يا حبيبي وعارف ان دماغك هي الي بتخليكي تفكري في حاجة ذي كده وانا عنيا ليكي ولي دماغك والله بس الطريق ده هيوصلنا لي نقطة وحشه اوي انتي كده لو حد جه قالك محمد بيخونك هتصدقي حتي لو مفيش دليل فأنا عايز الثقة مبينا تكون مليون الي هو حد يجي يقولك ده خانك ويوريكي صور بس انتي تكدبيه لأن انا اكيد عمري ما هضيعك من ايدي بسبب غلطة ملهاش لازمة ذي دي ❤️.
+
+                      
+عايزك تكوني مطمنة يا حبيبتي طول ما انا موجود ومش عايزك تفكري في اي حاجة ارمي حملك علي ربنا وعليا أين كان إيه لأننا واحد يا حبيبتي وانا جنبك ومعايا وهسمعك وعمري ما هزهق منك لأنك بنتي الكبيرة و واول فرحتي يا نور عيني و لأنك أول حب في حياتي دخل قلبي وقعد وربع.
+
+                      
+مكنتش بقتنع بحوار الحب خالص الحقيقة وشايف انه لعب وعيال ومكنتش عامل حسابي خالص اني ممكن اثق في حد نهائي وكنت شايف إنه كل الناس ممكن تغدر في يوم من الأيام بس بجد من يوم ما كلمتك وانا واثق فيكي وفي قبول كده من ناحيتك و عارف إنك بنت اصول وعمرك ما هتكسري ضهري بغلطة ممكن تعمليها ❤️.
+
+                      
+محمد خالد ملهوش نقطة ضغف بس انتي نقطة ضعفة يا نونه يمكن انا مفيش حاجة بخاف منها بس عندي حاجة اخاف عليها فربنا يديمك ليا يا روحي واشوفك مبسوطة ديما وفرحانة وربنا يقدرني واسعدك ياا حبيبت بابا ❤️.
+
+                      
+انا بحبك اوي انا بحب اشوفك بنتي لأنك بنتي انا حابب اخدك في حضني وافضل اطبطب عليكي واحكيلك حدوته واجبلك حاجات حلوة وانا راجع من بره و تنامي علي رجلي واقعد احكيلك كل تفاصيل يومي انا بجد هبقا مستريح اوي طول ما انتي معايا لأني بحبك اوي يا نهى والله ❤️.
+
+                      
+السايت ده انا شغال فيه بقالي كام يوم حابب يكون لينا عالم خاص بينا و هو نسخة من سايت الزين فربنا يديمك ليا يا حبيبت بابا يارب ❤️.
+                      
+
+بجد بجد بحبك يا نهى والله بحبك حب فوق ما تتخيلي والله يا بنتي ازاي انتي حلوه كده انتي في عينا تحفه انتي مش متخيله انا بشوفك ازاي انا عيوني بتلمع لما بشوف صورتك والله بحس اني مرتاح نفسيا بحس ان هموم الدنيا كلها خفيفة علي قلبي بحس اني مرتاح كده وبستغرب نفسي لان عارف محمد عامل ازاي فبجد شابوه ليكي يا مزه والله 😂❤️.
+
+الدنيا كلها تحت رجلك يا حبيبتي ❤️.
+                    </p>
+                    <p class="text-5xl font-black text-pink-200 mt-16">أحبكِ للأبد يا حبيبت باباكي.❤️</p>
+                </div>
+            </section>
+
+            <!-- قسم الرسالة الصوتية الخاصة -->
+            <section class="py-20 px-6 reveal">
+                <div class="max-w-2xl mx-auto bg-white/60 backdrop-blur-xl border border-white/50 p-12 rounded-[3.5rem] shadow-xl text-center relative group overflow-hidden">
+                    <div class="relative z-10">
+                        <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-8 pulse-mic">
+                            <i class="fas fa-microphone text-pink-400 text-3xl"></i>
+                        </div>
+                        <h3 class="text-2xl font-black text-emerald-900 mb-4">I Love you Noah</h3>
+                        <p class="text-gray-500 mb-10 font-semibold italic text-sm">اخسر الدنيا كلها علشانك ومقدرش اخسرك علشان حاجة.</p>
+                        
+                        <div class="bg-white/80 p-4 rounded-2xl flex items-center gap-4 border border-pink-50 shadow-inner">
+                            <button onclick="toggleVoiceMessage()" class="w-12 h-12 bg-emerald-900 text-white rounded-full flex items-center justify-center transition-transform active:scale-95">
+                                <i id="voiceIcon" class="fas fa-play ml-1"></i>
+                            </button>
+                            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div id="voiceProgress" class="h-full bg-pink-400 w-0 transition-all duration-100"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- ضع رابط رسالتك الصوتية هنا (مثلاً: voice.mp3) -->
+                        <audio id="specialVoice">
+                            <source src="nona.mp3" type="audio/mpeg">
+                        </audio>
+                    </div>
+                </div>
+            </section>
+
+            <footer class="text-center py-12 opacity-30 text-xs font-black tracking-widest uppercase">
+                صُنع بكل حب علشان خاطر النونه ©
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        function clean(str) {
+            return str.replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/[^0-9]/g, "");
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('passInput');
+            const icon = document.getElementById('toggleIcon');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        }
+
+        function checkPassword() {
+            const rawInput = document.getElementById('passInput').value;
+            const input = clean(rawInput);
+            if (input === "23102024") {
+                const screen = document.getElementById('password-screen');
+                const wrapper = document.getElementById('main-wrapper');
+                screen.style.opacity = '0';
+                screen.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    screen.style.display = 'none';
+                    wrapper.style.display = 'block';
+                    document.body.style.overflow = 'auto';
+                    setTimeout(() => {
+                        wrapper.style.opacity = '1';
+                        startApp();
+                    }, 50);
+                }, 800);
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+                document.querySelector('.pass-card').animate([{ transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }], { duration: 100, iterations: 3 });
+            }
+        }
+
+        const voiceAudio = document.getElementById('specialVoice');
+        const voiceIcon = document.getElementById('voiceIcon');
+        const progressBar = document.getElementById('voiceProgress');
+
+        function toggleVoiceMessage() {
+            if (voiceAudio.paused) {
+                voiceAudio.play();
+                voiceIcon.className = "fas fa-pause";
+            } else {
+                voiceAudio.pause();
+                voiceIcon.className = "fas fa-play ml-1";
+            }
+        }
+
+        voiceAudio.ontimeupdate = () => {
+            progressBar.style.width = (voiceAudio.currentTime / voiceAudio.duration) * 100 + "%";
+        };
+
+        voiceAudio.onended = () => {
+            voiceIcon.className = "fas fa-play ml-1";
+            progressBar.style.width = "0%";
+        };
+
+        function startApp() {
+            startCounter();
+            handleScrollReveal();
+            startHeartRain();
+        }
+
+        function startCounter() {
+            const startDate = new Date('2024-10-23T00:00:00');
+            setInterval(() => {
+                const diff = new Date() - startDate;
+                document.getElementById('days').innerText = Math.floor(diff / 86400000);
+                document.getElementById('hours').innerText = Math.floor((diff / 3600000) % 24);
+                document.getElementById('minutes').innerText = Math.floor((diff / 60000) % 60);
+                document.getElementById('seconds').innerText = Math.floor((diff / 1000) % 60);
+            }, 1000);
+        }
+
+        let isPlaying = false;
+        function handleMusic() {
+            const music = document.getElementById('loveMusic');
+            const icon = document.getElementById('musicIcon');
+            const vinyl = document.getElementById('vinyl');
+            if (isPlaying) {
+                music.pause();
+                icon.className = "fas fa-play";
+                vinyl.classList.remove('vinyl-spin');
+            } else {
+                music.play().catch(() => {});
+                icon.className = "fas fa-pause";
+                vinyl.classList.add('vinyl-spin');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function startHeartRain() {
+            setInterval(() => {
+                const h = document.createElement('i');
+                h.className = `fas fa-heart heart-particle`;
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.bottom = '-50px';
+                h.style.setProperty('--tx', `${(Math.random()-0.5)*400}px`);
+                h.style.setProperty('--ty', `-${Math.random()*500+400}px`);
+                h.style.setProperty('--tr', `${Math.random()*720}deg`);
+                h.style.color = '#E9B2B2';
+                h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 4000);
+            }, 400);
+        }
+
+        function handleScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('reveal-visible'); });
+            }, { threshold: 0.15 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        document.addEventListener('mousedown', (e) => {
+            const heart = document.createElement('i');
+            heart.className = 'fas fa-heart click-heart';
+            heart.style.left = e.pageX + 'px'; heart.style.top = e.pageY + 'px';
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 1000);
+        });
+
+        document.getElementById('passInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') checkPassword(); });
+    </script>
+</body>
+</html>
