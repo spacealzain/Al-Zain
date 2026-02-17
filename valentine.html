@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى أميرتي - Valentine's Edition</title>
+  
+    <!-- Fonts - استايل الزين (Cairo & Manrope) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=Manrope:wght@400;600;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --bg-body: #FFF5F5;
+            --text-main: #4A0E0E; /* بني محمر دافئ */
+            --accent-pink: #FF4D6D; /* وردي فلانتاين */
+            --valentine-red: #C9184A;
+            --radius-xl: 32px;
+            --shadow-card: 0 10px 40px rgba(255, 77, 109, 0.1);
+            --transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        body {
+            font-family: 'Cairo', 'Manrope', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            overflow-x: hidden; 
+            direction: rtl;
+        }
+
+        /* --- شاشة الحماية الزجاجية --- */
+        #password-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #fff0f3 0%, #ffccd5 100%);
+            transition: all 0.8s ease-in-out;
+        }
+
+        .blob {
+            position: absolute; border-radius: 50%; filter: blur(60px); z-index: -1;
+            animation: float 10s infinite alternate;
+        }
+        .blob-1 { width: 400px; height: 400px; background: #ffb3c1; top: -100px; left: -100px; }
+        .blob-2 { width: 350px; height: 350px; background: #ff85a1; bottom: -50px; right: -50px; animation-delay: -2s; }
+
+        @keyframes float {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(30px, 50px) scale(1.1); }
+        }
+
+        .pass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            padding: 50px 40px;
+            border-radius: var(--radius-xl);
+            border: 2px solid #ff4d6d22;
+            box-shadow: 0 20px 50px rgba(201, 24, 74, 0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        #passInput {
+            width: 100%; padding: 18px; border-radius: 20px;
+            border: 1px solid rgba(201, 24, 74, 0.2); background: rgba(255, 255, 255, 0.8);
+            text-align: center; font-size: 22px; font-weight: 700; color: var(--valentine-red);
+            outline: none; transition: 0.3s;
+        }
+        #passInput:focus { border-color: var(--accent-pink); box-shadow: 0 0 20px rgba(255, 77, 109, 0.2); }
+
+        .btn-unlock {
+            background: var(--valentine-red); color: white; border: none;
+            padding: 15px 50px; border-radius: 100px; font-weight: 800;
+            cursor: pointer; transition: var(--transition);
+            box-shadow: 0 10px 20px rgba(201, 24, 74, 0.3);
+        }
+        .btn-unlock:hover { transform: translateY(-3px); background: #ff4d6d; box-shadow: 0 15px 30px rgba(255, 77, 109, 0.4); }
+
+        /* --- محتوى الموقع الرئيسي --- */
+        #main-wrapper {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .reveal-visible { opacity: 1; transform: translateY(0); }
+
+        .photo-floating { animation: float-photo 6s ease-in-out infinite; }
+        @keyframes float-photo {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(2deg); }
+        }
+
+        .heart-particle {
+            position: fixed; pointer-events: none; z-index: 100;
+            animation: heart-fly 4s ease-out forwards;
+        }
+        @keyframes heart-fly {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(0) rotate(var(--tr)); opacity: 0; }
+        }
+
+        /* بتلات الورد */
+        .petal {
+            position: fixed; top: -10%; pointer-events: none; z-index: 50;
+            animation: fall linear forwards;
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(540deg); }
+        }
+
+        .glass-love-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 77, 109, 0.1);
+            transition: var(--transition);
+        }
+        .glass-love-card:hover { transform: translateY(-15px); border-color: var(--accent-pink); box-shadow: var(--shadow-card); }
+
+        .click-heart {
+            position: absolute; color: var(--accent-pink); pointer-events: none;
+            animation: click-anim 1s ease-out forwards; z-index: 9999;
+        }
+        @keyframes click-anim {
+            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
+            100% { transform: translate(-50%, -150%) scale(2); opacity: 0; }
+        }
+
+        .vinyl-spin { animation: spin 4s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* ظرف الفلانتاين التفاعلي */
+        .valentine-card {
+            position: relative; width: 300px; height: 200px; background: #ff4d6d;
+            border-radius: 10px; cursor: pointer; transform-style: preserve-3d;
+            transition: transform 0.6s; margin: 50px auto;
+        }
+        .valentine-card:hover { transform: scale(1.05); }
+        .envelope-flap {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: #ff758f; clip-path: polygon(0 0, 100% 0, 50% 50%);
+            z-index: 2; transition: transform 0.4s; transform-origin: top;
+        }
+        .valentine-card.open .envelope-flap { transform: rotateX(180deg); }
+        .letter-content {
+            position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            background: white; padding: 20px; border-radius: 5px; z-index: 1;
+            transform: translateY(0); transition: transform 0.4s; text-align: center;
+        }
+        .valentine-card.open .letter-content { transform: translateY(-60px); z-index: 3; }
+
+        .pulse-mic { animation: pulse-mic 2s infinite ease-in-out; }
+        @keyframes pulse-mic { 0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.4); } 50% { transform: scale(1.1); box-shadow: 0 0 0 15px rgba(255, 77, 109, 0); } }
+
+        /* هيدر عيد الحب */
+        .valentine-header {
+            background: linear-gradient(90deg, #ff4d6d, #c9184a);
+            color: white; text-align: center; padding: 10px; font-weight: bold;
+            font-size: 0.9rem; letter-spacing: 2px;
+        }
+    </style>
+</head>
+<body class="selection:bg-red-100">
+
+    <!-- 1. شاشة الحماية (الباسورد) -->
+    <section id="password-screen">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="pass-card">
+            <div class="relative inline-block mb-6">
+                <div style="font-size: 60px; color: var(--accent-pink);"><i class="fas fa-heart animate-bounce"></i></div>
+                <i class="fas fa-crown absolute -top-2 -right-2 text-yellow-500 text-xl rotate-12"></i>
+            </div>
+            <h2 class="font-bold text-2xl mb-2 text-red-900">عيد حب سعيد يا أميرتي</h2>
+            <p class="text-gray-500 text-sm mb-6">اكتبي التاريخ السري يا نونا عشان ندخل لعالمنا ❤️</p>
+            
+            <div class="relative w-full mb-6">
+                <input type="password" id="passInput" placeholder="Happy Valentine's Day">
+                <i class="fas fa-eye absolute left-4 top-1/2 -translate-y-1/2 cursor-pointer opacity-40 hover:opacity-100" id="toggleIcon" onclick="togglePassword()"></i>
+            </div>
+
+            <button class="btn-unlock w-full" id="unlockBtn" onclick="checkPassword()">افتحي يا عيوني</button>
+            <p id="error-msg" class="text-red-500 mt-5 hidden font-bold text-sm">
+                التاريخ خطأ.. ركزي يا روحي ❤️
+            </p>
+        </div>
+    </section>
+
+    <!-- 2. محتوى الموقع الرئيسي -->
+    <div id="main-wrapper">
+        <!-- شريط علوي للفلانتاين -->
+        <div class="valentine-header">
+            HAPPY VALENTINE'S DAY MY QUEEN ❤️ 2026
+        </div>
+
+        <main id="main-content" class="pb-20">
+            
+            <!-- مشغل موسيقى الخلفية -->
+            <div class="fixed bottom-6 left-6 z-[500]">
+                <button onclick="handleMusic()" class="relative group">
+                    <div id="vinyl" class="w-16 h-16 bg-red-900 rounded-full border-4 border-red-700 flex items-center justify-center shadow-2xl transition-transform hover:scale-110">
+                        <div class="w-6 h-6 bg-pink-100 rounded-full border-2 border-white"></div>
+                    </div>
+                    <div class="absolute inset-0 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity">
+                        <i id="musicIcon" class="fas fa-play"></i>
+                    </div>
+                </button>
+                <audio id="loveMusic" loop>
+                    <!-- ضع رابط الموسيقى الخاص بك هنا -->
+                    <source src="YOUR_SONG_URL_HERE.mp3" type="audio/mpeg">
+                </audio>
+            </div>
+
+            <header class="flex justify-between items-center p-8 max-w-7xl mx-auto">
+                <div class="logo font-black text-2xl tracking-tight text-red-900">𝐴𝑙-𝑍𝑎𝑖𝑛 <span class="text-pink-500">❤️</span> Nona</div>
+                <div class="hidden md:block text-xs font-bold text-gray-400 uppercase tracking-widest">فـلانـتـايـن 2026 | مـحـمد & نـهـى</div>
+            </header>
+
+            <section class="min-h-[90vh] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+                <div class="photo-floating relative mb-12">
+                    <div class="w-[280px] h-[350px] md:w-[400px] md:h-[500px] rounded-[3rem] overflow-hidden border-8 border-white shadow-2xl relative z-10">
+                        <img src="nona.jpg" alt="noha al-zain" class="w-full h-full object-cover">
+                    </div>
+                    <div class="absolute -inset-10 bg-red-200/30 blur-3xl rounded-[4rem] -z-10 animate-pulse"></div>
+                    <!-- أيقونات طائرة حول الصورة -->
+                    <i class="fas fa-heart absolute -top-5 -left-5 text-red-500 text-4xl animate-bounce"></i>
+                    <i class="fas fa-gift absolute bottom-10 -right-8 text-pink-400 text-3xl"></i>
+                </div>
+
+                <div class="text-center reveal">
+                    <span class="text-xs font-black tracking-[0.4em] text-red-800/60 uppercase mb-4 block">كل ثانية وأنتِ حبيبتي</span>
+                    <h1 class="text-5xl md:text-7xl font-black text-red-900 mb-6 leading-tight">إلى نونة قلبي</h1>
+                    <p class="text-xl md:text-3xl font-bold text-pink-500 font-serif italic">"Valentine's is just a day, you're my lifetime"</p>
+                </div>
+            </section>
+
+            <!-- ظرف الفلانتاين المفاجئ -->
+            <section class="py-10 flex flex-col items-center reveal">
+                <h3 class="text-xl font-bold text-red-800 mb-4">اضغطي لفتح مفاجأة الفلانتاين </h3>
+                <div class="valentine-card" id="vCard" onclick="this.classList.toggle('open')">
+                    <div class="envelope-flap"></div>
+                    <div class="letter-content shadow-lg border border-pink-100">
+                        <p class="text-red-600 font-bold mb-2">إلى حبيبتي نهى</p>
+                        <p class="text-gray-600 text-xs leading-relaxed">أنتِ أجمل هدية جابها ليا القدر في اليوم ده وفي كل يوم..</p>
+                        <p class="text-red-500 font-black mt-3">بـحـبـك ❤️</p>
+                    </div>
+                    <div class="absolute inset-0 bg-red-600 rounded-lg -z-10"></div>
+                </div>
+            </section>
+
+            <!-- عداد الحب المحدث -->
+            <section class="py-16 px-6 reveal">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-white/70 backdrop-blur-2xl border-2 border-pink-100 p-10 rounded-[3.5rem] shadow-xl text-center relative">
+                        <i class="fas fa-infinity absolute -top-5 left-1/2 -translate-x-1/2 text-4xl text-red-400 bg-white px-4"></i>
+                        <h3 class="text-2xl font-black text-red-900 mb-8 uppercase tracking-widest">قـصـتـنـا مـسـتـمـرة مـنـذ</h3>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            <div class="bg-red-50 p-6 rounded-3xl"><span id="days" class="text-4xl font-black text-red-600">0</span><span class="text-xs font-bold text-red-400 mt-2 block">يوم</span></div>
+                            <div class="bg-pink-50 p-6 rounded-3xl"><span id="hours" class="text-4xl font-black text-pink-600">0</span><span class="text-xs font-bold text-pink-400 mt-2 block">ساعة</span></div>
+                            <div class="bg-red-50 p-6 rounded-3xl"><span id="minutes" class="text-4xl font-black text-red-600">0</span><span class="text-xs font-bold text-red-400 mt-2 block">دقيقة</span></div>
+                            <div class="bg-pink-50 p-6 rounded-3xl"><span id="seconds" class="text-4xl font-black text-pink-600">0</span><span class="text-xs font-bold text-pink-400 mt-2 block">ثانية</span></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- لماذا أعشقك - تصميم الفلانتاين -->
+            <section class="py-24 px-6 reveal overflow-hidden">
+                <div class="max-w-6xl mx-auto text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-black text-red-900">لأنكِ الفلانتاين الخاص بي ❤️</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6 px-4 max-w-7xl mx-auto">
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center group">
+                        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-smile-beam text-4xl text-red-500"></i>
+                        </div>
+                        <h4 class="font-black text-red-900 mb-4">ضحكتكِ الدافئة</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed font-semibold italic">ضحكتك هي اللي بتخلي الفلانتاين عيد فعلاً في قلبي.</p>
+                    </div>
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center group">
+                        <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-eye text-4xl text-pink-500"></i>
+                        </div>
+                        <h4 class="font-black text-red-900 mb-4">سحر عيونك</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed font-semibold italic">في كل مرة بكلمك فيها، بقع في حبك من جديد يا نونا.</p>
+                    </div>
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center group">
+                        <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-hand-holding-heart text-4xl text-red-500"></i>
+                        </div>
+                        <h4 class="font-black text-red-900 mb-4">حنيتك النادرة</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed font-semibold italic">أحن قلب لمسه قلبي في حياتي كلها والله.</p>
+                    </div>
+                    <div class="glass-love-card p-10 rounded-[3rem] text-center group">
+                        <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-8 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-stars text-4xl text-pink-500"></i>
+                        </div>
+                        <h4 class="font-black text-red-900 mb-4">روحك الحلوة</h4>
+                        <p class="text-sm text-gray-500 leading-relaxed font-semibold italic">انتي مش بس حبيبتي، انتي روحي اللي بتنور حياتي.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- رسالة الحب الكبيرة -->
+            <section class="py-24 px-6 reveal">
+                <div class="max-w-5xl mx-auto text-center bg-red-900 p-12 md:p-24 rounded-[5rem] shadow-[0_30px_100px_rgba(201,24,74,0.4)] relative overflow-hidden">
+                    <!-- زخارف خلفية -->
+                    <i class="fas fa-heart text-[20rem] text-white/5 absolute -bottom-20 -left-20 rotate-12"></i>
+                    <i class="fas fa-quote-right text-8xl text-pink-500/20 absolute top-10 left-10"></i>
+
+                    <h3 class="text-3xl font-black text-pink-100 mb-10 tracking-widest uppercase">Valentine's Message Al-Zain</h3>
+                    <div class="space-y-8 text-xl md:text-2xl font-medium leading-[2] text-white/90 italic text-justify px-4">
+                        <p>حبيبتي وأميرتي الغالية حبيبت باباها</p>
+                        <p>كل فلانتاين وأنتِ في حضني وكل فلانتاين وأنا بحبك أكتر من اللي قبله. السايت ده مش مجرد كود ده حتة من قلبي حبيت أهديهالك عشان تعرفي إنك دايمًا في بالي حتى وأنا وسط ضغطي وشغلي.</p>
+                        <p>أنا مستعد أتعب وأشقى وأحرق بنزين الدنيا كلها عشان أشوف بس لمعة الفرحة في عيونك انتي مش متخيلة السعادة اللي بحس بيها وانتي مبسوطة بحس إن كل تعبي راح وبقيت أطير في السما.</p>
+                        <p>عايزك تطمني دايمًا يا حبيبتي أنا جنبك ومعاكي وسندك ثقي فيا زي ما أنا واثق فيكي وعمر الغدر ما هيكون ليه مكان بينا لأننا بنينا حبنا على أصل طيب. انتي بنتي الكبيرة وأول فرحتي وأول حب حقيقي يدخل قلبي ويستربع فيه.</p>
+                        <p>يا نونا، الدنيا كلها تحت رجلك، وربنا يقدرني وأسعدك وأكون الزوج والأب والحبيب اللي تستاهليه بحبك حب فوق الوصف وبشوفك أجمل واحدة في الدنيا بعيوني اللي بتلمع لما بتشوف صورتك.</p>
+                    </div>
+                    <p class="text-6xl font-black text-pink-300 mt-20 font-serif">I Love You, Nona ❤️</p>
+                    <p class="text-sm text-white/50 mt-4">Happy Valentine's Day 2026</p>
+                </div>
+            </section>
+
+            <!-- الصوت الخاص -->
+            <section class="py-20 px-6 reveal">
+                <div class="max-w-2xl mx-auto bg-white border-2 border-red-50 p-12 rounded-[4rem] shadow-2xl text-center relative group">
+                    <div class="w-24 h-24 bg-red-600 text-white rounded-full flex items-center justify-center mx-auto mb-8 pulse-mic">
+                        <i class="fas fa-volume-up text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-red-900 mb-2">رسالة صوتية من الزين</h3>
+                    <p class="text-gray-400 mb-12 text-sm italic">اسمعي صوتي وهو بيقولك قد إيه بحبك..</p>
+                    
+                    <div class="bg-red-50 p-6 rounded-3xl flex items-center gap-6 border border-red-100">
+                        <button onclick="toggleVoiceMessage()" class="w-16 h-16 bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform active:scale-95">
+                            <i id="voiceIcon" class="fas fa-play text-xl ml-1"></i>
+                        </button>
+                        <div class="flex-1">
+                            <div class="h-2 bg-red-200 rounded-full overflow-hidden">
+                                <div id="voiceProgress" class="h-full bg-red-600 w-0 transition-all duration-100"></div>
+                            </div>
+                            <div class="flex justify-between mt-2 text-[10px] font-bold text-red-400">
+                                <span>بيحبك الزين</span>
+                                <span>للأبد</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <audio id="specialVoice">
+                        <source src="nona.mp3" type="audio/mpeg">
+                    </audio>
+                </div>
+            </section>
+
+            <footer class="text-center py-16 text-gray-400">
+                <div class="flex justify-center gap-4 mb-4 text-red-200">
+                    <i class="fas fa-heart"></i>
+                    <i class="fas fa-heart"></i>
+                    <i class="fas fa-heart"></i>
+                </div>
+                <p class="text-xs font-black tracking-widest uppercase mb-2">VALENTINE SPECIAL EDITION</p>
+                <p class="text-[10px] font-bold">صُنع بكل حب للنونة © 2026</p>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // تنظيف المدخلات
+        function clean(str) {
+            return str.replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/[^0-9]/g, "");
+        }
+
+        function togglePassword() {
+            const input = document.getElementById('passInput');
+            const icon = document.getElementById('toggleIcon');
+            input.type = input.type === 'password' ? 'text' : 'password';
+            icon.classList.toggle('fa-eye');
+            icon.classList.toggle('fa-eye-slash');
+        }
+
+        function checkPassword() {
+            const rawInput = document.getElementById('passInput').value;
+            const input = clean(rawInput);
+            // الباسورد: 23102024
+            if (input === "23102024") {
+                const screen = document.getElementById('password-screen');
+                const wrapper = document.getElementById('main-wrapper');
+                screen.style.opacity = '0';
+                screen.style.transform = 'scale(1.2) blur(20px)';
+                setTimeout(() => {
+                    screen.style.display = 'none';
+                    wrapper.style.display = 'block';
+                    document.body.style.overflow = 'auto';
+                    setTimeout(() => {
+                        wrapper.style.opacity = '1';
+                        startApp();
+                    }, 50);
+                }, 800);
+            } else {
+                document.getElementById('error-msg').classList.remove('hidden');
+                const card = document.querySelector('.pass-card');
+                card.animate([
+                    { transform: 'translateX(-10px)' },
+                    { transform: 'translateX(10px)' },
+                    { transform: 'translateX(0)' }
+                ], { duration: 100, iterations: 3 });
+            }
+        }
+
+        const voiceAudio = document.getElementById('specialVoice');
+        const voiceIcon = document.getElementById('voiceIcon');
+        const progressBar = document.getElementById('voiceProgress');
+
+        function toggleVoiceMessage() {
+            if (voiceAudio.paused) {
+                voiceAudio.play();
+                voiceIcon.className = "fas fa-pause";
+            } else {
+                voiceAudio.pause();
+                voiceIcon.className = "fas fa-play ml-1";
+            }
+        }
+
+        voiceAudio.ontimeupdate = () => {
+            progressBar.style.width = (voiceAudio.currentTime / voiceAudio.duration) * 100 + "%";
+        };
+
+        voiceAudio.onended = () => {
+            voiceIcon.className = "fas fa-play ml-1";
+            progressBar.style.width = "0%";
+        };
+
+        function startApp() {
+            startCounter();
+            handleScrollReveal();
+            startValentineEffects();
+        }
+
+        function startCounter() {
+            const startDate = new Date('2024-10-23T00:00:00');
+            setInterval(() => {
+                const diff = new Date() - startDate;
+                document.getElementById('days').innerText = Math.floor(diff / 86400000);
+                document.getElementById('hours').innerText = Math.floor((diff / 3600000) % 24);
+                document.getElementById('minutes').innerText = Math.floor((diff / 60000) % 60);
+                document.getElementById('seconds').innerText = Math.floor((diff / 1000) % 60);
+            }, 1000);
+        }
+
+        let isPlaying = false;
+        function handleMusic() {
+            const music = document.getElementById('loveMusic');
+            const icon = document.getElementById('musicIcon');
+            const vinyl = document.getElementById('vinyl');
+            if (isPlaying) {
+                music.pause();
+                icon.className = "fas fa-play";
+                vinyl.classList.remove('vinyl-spin');
+            } else {
+                music.play().catch(() => {});
+                icon.className = "fas fa-pause";
+                vinyl.classList.add('vinyl-spin');
+            }
+            isPlaying = !isPlaying;
+        }
+
+        function startValentineEffects() {
+            // قلوب طائرة للأعلى
+            setInterval(() => {
+                const h = document.createElement('i');
+                h.className = `fas fa-heart heart-particle`;
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.bottom = '-50px';
+                h.style.setProperty('--tx', `${(Math.random()-0.5)*400}px`);
+                h.style.setProperty('--ty', `-${Math.random()*600+500}px`);
+                h.style.setProperty('--tr', `${Math.random()*720}deg`);
+                h.style.color = Math.random() > 0.5 ? '#FF4D6D' : '#C9184A';
+                h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 4000);
+            }, 300);
+
+            // بتلات ورد تتساقط للأسفل
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.width = petal.style.height = (Math.random() * 15 + 10) + 'px';
+                petal.style.background = `rgba(255, ${Math.random()*100+100}, ${Math.random()*150+100}, 0.7)`;
+                petal.style.borderRadius = '50% 0 50% 50%';
+                petal.style.animationDuration = (Math.random() * 3 + 4) + 's';
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 7000);
+            }, 600);
+        }
+
+        function handleScrollReveal() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => { 
+                    if (entry.isIntersecting) entry.target.classList.add('reveal-visible'); 
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        // تأثير النقر بالماوس (قلوب عند الضغط)
+        document.addEventListener('mousedown', (e) => {
+            for(let i=0; i<3; i++) {
+                const heart = document.createElement('i');
+                heart.className = 'fas fa-heart click-heart';
+                heart.style.left = (e.pageX + (Math.random()-0.5)*30) + 'px';
+                heart.style.top = (e.pageY + (Math.random()-0.5)*30) + 'px';
+                heart.style.color = i % 2 === 0 ? '#FF4D6D' : '#C9184A';
+                document.body.appendChild(heart);
+                setTimeout(() => heart.remove(), 1000);
+            }
+        });
+
+        document.getElementById('passInput').addEventListener('keypress', (e) => { 
+            if (e.key === 'Enter') checkPassword(); 
+        });
+    </script>
+</body>
+</html>
+
