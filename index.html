@@ -31,7 +31,7 @@
             font-family: 'Cairo', 'Manrope', sans-serif;
             background-color: var(--bg-body);
             color: var(--text-main);
-            overflow: hidden; 
+            overflow-x: hidden; 
             direction: rtl;
         }
 
@@ -156,17 +156,6 @@
         }
         .pulse-mic { animation: pulse-mic 2s infinite ease-in-out; }
 
-        /* --- صفحة الفالنتين --- */
-        #valentine-screen {
-            display: none;
-            position: fixed;
-            inset: 0;
-            z-index: 800;
-            background: #fffafa;
-            overflow-y: auto;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
         .valentine-btn {
             background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
             box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
@@ -201,10 +190,10 @@
         
         <!-- زر Valentine العلوي -->
         <div class="fixed top-6 left-6 z-[600]">
-            <button onclick="toggleValentine()" class="valentine-btn text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transform transition hover:scale-105 active:scale-95">
+            <a href="valentine.html" class="valentine-btn text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transform transition hover:scale-105 active:scale-95 no-underline">
                 <i class="fas fa-gift animate-bounce"></i>
                 <span>عالم الفالنتين</span>
-            </button>
+            </a>
         </div>
 
         <main id="main-content" class="pb-20">
@@ -321,44 +310,36 @@
                 </div>
             </section>
 
-            <!-- رسالة الحب المحدثة -->
+            <!-- رسالة الحب الكاملة -->
             <section class="py-24 px-6 reveal">
                 <div class="max-w-4xl mx-auto text-center bg-emerald-900 p-12 md:p-20 rounded-[4rem] shadow-2xl relative overflow-hidden">
                     <i class="fas fa-feather-alt text-9xl text-white/5 absolute top-10 right-10"></i>
-                    <h3 class="text-3xl font-black text-pink-100 mb-10">Massage Al-Zain</h3>
-                    <div class="text-xl md:text-2xl font-bold leading-loose text-white/90 italic text-right">
+                    <h3 class="text-3xl font-black text-pink-100 mb-10">رسالة الزين</h3>
+                    <div class="text-xl md:text-2xl font-bold leading-loose text-white/90 italic text-right space-y-8">
                         <p>
                             حبيبتي وبنتي وصحبتي و اختي وزميلتي وسري وحياتي كلها ، حابب اقولك إني بحبك اوي يا نور عيوني ومستعد اعمل أي حاجة علشان تكوني مبسوطة يا حبيبي والله يابت يا نهى انا مضغوط ضغطة ما يعلم بيها إلا ربنا بس انا حابب اتعب علشانك لأنك تستاهلي لأن طلاما انتي المكسب بتاعي بعد التعب ده فأنا مستعد احرق بنزين و ازود السرعة وازود الشغل واضغط علي نفسي علشان خاطر تكوني معايا وفي حضني انتي بجد متعرفيش انا بحبك قد إيه انا بجد بحب اوي حب فوق ما انتي تتخيلي انا ببقا مبسوط اوي بجد وانتي مبسوطة وفرحانة.
                         </p>
-                        <br>
                         <p>
                             ساعات بضايق منك الحقيقة بسبب ان ممكن تفكيرك فيا يجيبك إني ممكن اكلم بنت أو اخون أو هكذا وتقومي ساكته مره واحده وتقلبي وشك وتخدي جنبك ، طب ليه كل ده وانا اصلا معملتش حاجه ومليش ماضي أو خونتك قبل كده أو طالع عليا سُمعة مش كويسة ولو الدنيا كلها عارفة مين محمد خالد فأنتي اكتر واحده عارفة مين محمد فثقي فيا يا حبيبي وعارف ان دماغك هي الي بتخليكي تفكري في حاجة ذي كده وانا عنيا ليكي ولي دماغك والله بس الطريق ده هيوصلنا لي نقطة وحشه اوي انتي كده لو حد جه قالك محمد بيخونك هتصدقي حتي لو مفيش دليل فأنا عايز الثقة مبينا تكون مليون الي هو حد يجي يقولك ده خانك ويوريكي صور بس انتي تكدبيه لأن انا اكيد عمري ما هضيعك من ايدي بسبب غلطة ملهاش لازمة ذي دي ❤️.
                         </p>
-                        <br>
                         <p>
                             عايزك تكوني مطمنة يا حبيبتي طول ما انا موجود ومش عايزك تفكري في اي حاجة ارمي حملك علي ربنا وعليا أين كان إيه لأننا واحد يا حبيبتي وانا جنبك ومعايا وهسمعك وعمري ما هزهق منك لأنك بنتي الكبيرة و واول فرحتي يا نور عيني و لأنك أول حب في حياتي دخل قلبي وقعد وربع.
                         </p>
-                        <br>
                         <p>
                             مكنتش بقتنع بحوار الحب خالص الحقيقة وشايف انه لعب وعيال ومكنتش عامل حسابي خالص اني ممكن اثق في حد نهائي وكنت شايف إنه كل الناس ممكن تغدر في يوم من الأيام بس بجد من يوم ما كلمتك وانا واثق فيكي وفي قبول كده من ناحيتك و عارف إنك بنت اصول وعمرك ما هتكسري ضهري بغلطة ممكن تعمليها ❤️.
                         </p>
-                        <br>
                         <p>
                             محمد خالد ملهوش نقطة ضغف بس انتي نقطة ضعفة يا نونه يمكن انا مفيش حاجة بخاف منها بس عندي حاجة اخاف عليها فربنا يديمك ليا يا روحي واشوفك مبسوطة ديما وفرحانة وربنا يقدرني واسعدك ياا حبيبت بابا ❤️.
                         </p>
-                        <br>
                         <p>
                             انا بحبك اوي انا بحب اشوفك بنتي لأنك بنتي انا حابب اخدك في حضني وافضل اطبطب عليكي واحكيلك حدوته واجبلك حاجات حلوة وانا راجع من بره و تنامي علي رجلي واقعد احكيلك كل تفاصيل يومي انا بجد هبقا مستريح اوي طول ما انتي معايا لأني بحبك اوي يا نهى والله ❤️.
                         </p>
-                        <br>
                         <p>
                             السايت ده انا شغال فيه بقالي كام يوم حابب يكون لينا عالم خاص بينا و هو نسخة من سايت الزين فربنا يديمك ليا يا حبيبت بابا يارب ❤️.
                         </p>
-                        <br>
                         <p>
                             بجد بجد بحبك يا نهى والله بحبك حب فوق ما تتخيلي والله يا بنتي ازاي انتي حلوه كده انتي في عينا تحفه انتي مش متخيله انا بشوفك ازاي انا عيوني بتلمع لما بشوف صورتك والله بحس اني مرتاح نفسيا بحس ان هموم الدنيا كلها خفيفة علي قلبي بحس اني مرتاح كده وبستغرب نفسي لان عارف محمد عامل ازاي فبجد شابوه ليكي يا مزه والله 😂❤️.
                         </p>
-                        <br>
                         <p>
                             الدنيا كلها تحت رجلك يا حبيبتي ❤️.
                         </p>
@@ -367,14 +348,14 @@
                 </div>
             </section>
 
-            <!-- قسم الرسالة الصوتية الخاصة -->
+            <!-- قسم الرسالة الصوتية -->
             <section class="py-20 px-6 reveal">
                 <div class="max-w-2xl mx-auto bg-white/60 backdrop-blur-xl border border-white/50 p-12 rounded-[3.5rem] shadow-xl text-center relative group overflow-hidden">
                     <div class="relative z-10">
                         <div class="w-20 h-20 bg-pink-100 rounded-full flex items-center justify-center mx-auto mb-8 pulse-mic">
                             <i class="fas fa-microphone text-pink-400 text-3xl"></i>
                         </div>
-                        <h3 class="text-2xl font-black text-emerald-900 mb-4">I Love you Noah</h3>
+                        <h3 class="text-2xl font-black text-emerald-900 mb-4">أحبكِ يا نهى</h3>
                         <p class="text-gray-500 mb-10 font-semibold italic text-sm">اخسر الدنيا كلها علشانك ومقدرش اخسرك علشان حاجة.</p>
                         
                         <div class="bg-white/80 p-4 rounded-2xl flex items-center gap-4 border border-pink-50 shadow-inner">
@@ -396,34 +377,6 @@
                 صُنع بكل حب علشان خاطر النونه ©
             </footer>
         </main>
-
-        <!-- 3. صفحة الفالنتين المنبثقة -->
-        <section id="valentine-screen">
-            <div class="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-                <button onclick="toggleValentine()" class="absolute top-10 right-10 text-emerald-900 hover:rotate-90 transition-transform duration-500">
-                    <i class="fas fa-times text-4xl"></i>
-                </button>
-                
-                <div class="max-w-3xl">
-                    <div class="mb-10 animate-bounce">
-                        <i class="fas fa-heart text-8xl text-pink-400"></i>
-                    </div>
-                    <h2 class="text-4xl md:text-6xl font-black text-emerald-900 mb-8 leading-tight">Will You Be My Valentine?</h2>
-                    <p class="text-xl md:text-2xl text-gray-500 font-semibold mb-12">يا نونة، كل يوم معاكي هو عيد حب بالنسبة لي، بس النهاردة حبيت أسمعها منك بشكل رسمي ❤️</p>
-                    
-                    <div class="flex flex-wrap justify-center gap-6">
-                        <button onclick="valentineResponse('yes')" class="bg-emerald-900 text-white px-12 py-5 rounded-full text-2xl font-black hover:bg-pink-400 transition-colors">Yes, Forever!</button>
-                        <button id="no-btn" onmouseover="moveNoButton()" class="bg-white border-2 border-emerald-900 text-emerald-900 px-12 py-5 rounded-full text-2xl font-black">No</button>
-                    </div>
-                </div>
-
-                <!-- رسالة النجاح -->
-                <div id="valentine-success" class="hidden mt-10">
-                    <h3 class="text-4xl font-black text-pink-400 animate-pulse">كنت عارف إنك مش هتقدري تقولي لأ يا روحي! ❤️</h3>
-                    <p class="mt-4 text-emerald-900 font-bold">بحبك يا نهى، يا أجمل اختيار في حياتي.</p>
-                </div>
-            </div>
-        </section>
     </div>
 
     <script>
@@ -459,37 +412,6 @@
             } else {
                 document.getElementById('error-msg').classList.remove('hidden');
                 document.querySelector('.pass-card').animate([{ transform: 'translateX(-10px)' }, { transform: 'translateX(10px)' }], { duration: 100, iterations: 3 });
-            }
-        }
-
-        function toggleValentine() {
-            const valScreen = document.getElementById('valentine-screen');
-            const isVisible = valScreen.style.display === 'block';
-            
-            if (isVisible) {
-                valScreen.style.opacity = '0';
-                setTimeout(() => { valScreen.style.display = 'none'; document.body.style.overflow = 'auto'; }, 500);
-            } else {
-                valScreen.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-                setTimeout(() => { valScreen.style.opacity = '1'; }, 10);
-            }
-        }
-
-        function moveNoButton() {
-            const btn = document.getElementById('no-btn');
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 50);
-            btn.style.position = 'fixed';
-            btn.style.left = x + 'px';
-            btn.style.top = y + 'px';
-        }
-
-        function valentineResponse(type) {
-            if (type === 'yes') {
-                document.getElementById('valentine-success').classList.remove('hidden');
-                document.getElementById('no-btn').style.display = 'none';
-                startConfetti();
             }
         }
 
@@ -559,22 +481,6 @@
                 document.body.appendChild(h);
                 setTimeout(() => h.remove(), 4000);
             }, 400);
-        }
-
-        function startConfetti() {
-            for (let i = 0; i < 50; i++) {
-                setTimeout(() => {
-                    const h = document.createElement('i');
-                    h.className = `fas fa-heart heart-particle`;
-                    h.style.left = Math.random() * 100 + 'vw';
-                    h.style.top = '100vh';
-                    h.style.setProperty('--tx', `${(Math.random()-0.5)*600}px`);
-                    h.style.setProperty('--ty', `-${Math.random()*1000+500}px`);
-                    h.style.color = i % 2 === 0 ? '#ff758c' : '#emerald-900';
-                    document.body.appendChild(h);
-                    setTimeout(() => h.remove(), 4000);
-                }, i * 50);
-            }
         }
 
         function handleScrollReveal() {
