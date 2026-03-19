@@ -160,6 +160,11 @@
             background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
             box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
         }
+        
+        .eid-btn {
+            background: linear-gradient(45deg, #059669 0%, #34d399 100%);
+            box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
+        }
     </style>
 </head>
 <body class="selection:bg-pink-100">
@@ -188,11 +193,15 @@
     <!-- 2. محتوى الموقع الرئيسي -->
     <div id="main-wrapper">
         
-        <!-- زر Valentine العلوي -->
-        <div class="fixed top-6 left-6 z-[600]">
-            <a href="valentine.html" class="valentine-btn text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transform transition hover:scale-105 active:scale-95 no-underline">
+        <!-- أزرار المناسبات العلوية -->
+        <div class="fixed top-6 left-6 z-[600] flex flex-col gap-3">
+            <a href="valentine" class="valentine-btn text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transform transition hover:scale-105 active:scale-95 no-underline">
                 <i class="fas fa-gift animate-bounce"></i>
                 <span>عالم الفالنتين</span>
+            </a>
+            <a href="eid" class="eid-btn text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transform transition hover:scale-105 active:scale-95 no-underline">
+                <i class="fas fa-moon animate-pulse"></i>
+                <span>العيد والعيدية</span>
             </a>
         </div>
 
