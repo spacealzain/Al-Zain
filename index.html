@@ -165,6 +165,11 @@
             background: linear-gradient(45deg, #059669 0%, #34d399 100%);
             box-shadow: 0 4px 15px rgba(52, 211, 153, 0.4);
         }
+
+        /* Menu Overlay Transition */
+        #menu-overlay {
+            transition: opacity 0.4s ease;
+        }
     </style>
 </head>
 <body class="selection:bg-pink-100">
@@ -193,16 +198,44 @@
     <!-- 2. محتوى الموقع الرئيسي -->
     <div id="main-wrapper">
         
-        <!-- أزرار المناسبات العلوية -->
-        <div class="fixed top-6 left-6 z-[600] flex flex-col gap-3">
-            <a href="valentine" class="valentine-btn text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transform transition hover:scale-105 active:scale-95 no-underline">
-                <i class="fas fa-gift animate-bounce"></i>
-                <span>عالم الفالنتين</span>
-            </a>
-            <a href="eid" class="eid-btn text-white font-bold py-3 px-6 rounded-full flex items-center gap-2 transform transition hover:scale-105 active:scale-95 no-underline">
-                <i class="fas fa-moon animate-pulse"></i>
-                <span>العيد والعيدية</span>
-            </a>
+        <!-- زر فتح القائمة (الهامبرغر) -->
+        <button id="menu-btn" onclick="toggleMenu()" class="fixed top-6 left-6 z-[800] w-14 h-14 bg-white/80 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center text-2xl text-emerald-900 transition-transform hover:scale-105 active:scale-95 border border-white">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- خلفية داكنة تظهر عند فتح القائمة -->
+        <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-emerald-900/20 backdrop-blur-sm z-[700] opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+        <!-- القائمة السفلية -->
+        <div id="side-menu" class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-[750] transform translate-y-full transition-transform duration-500 flex flex-col pt-6 px-6 pb-12 rounded-t-[3rem] border-t border-pink-100">
+            
+            <!-- مؤشر سحب القائمة (شكل جمالي) -->
+            <div class="w-16 h-1.5 bg-gray-300/80 rounded-full mx-auto mb-8"></div>
+
+            <div class="text-center mb-8">
+                <i class="fas fa-crown text-4xl text-amber-400 mb-2"></i>
+                <h3 class="font-black text-emerald-900 text-xl">أميرتي</h3>
+            </div>
+
+            <div class="flex flex-col gap-4 max-w-md mx-auto w-full">
+                <a href="valentine" class="valentine-btn text-white font-bold py-4 px-6 rounded-2xl flex items-center gap-3 transform transition hover:scale-105 active:scale-95 no-underline shadow-md">
+                    <i class="fas fa-gift text-xl"></i>
+                    <span>عالم الفالنتين</span>
+                </a>
+                
+                <a href="eid" class="eid-btn text-white font-bold py-4 px-6 rounded-2xl flex items-center gap-3 transform transition hover:scale-105 active:scale-95 no-underline shadow-md">
+                    <i class="fas fa-moon text-xl"></i>
+                    <span>العيد والعيدية</span>
+                </a>
+            </div>
+
+            <!-- الزر الأخير في أسفل القائمة -->
+            <div class="mt-8 max-w-md mx-auto w-full">
+                <a href="bye" class="bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 font-bold py-4 px-6 rounded-2xl flex items-center justify-center gap-3 transform transition hover:scale-105 active:scale-95 no-underline border border-red-100 shadow-sm">
+                    <i class="fas fa-envelope-open-text text-lg"></i>
+                    <span>الكلمة الأخيرة</span>
+                </a>
+            </div>
         </div>
 
         <main id="main-content" class="pb-20">
@@ -224,7 +257,7 @@
 
             <header class="flex justify-between items-center p-8 max-w-7xl mx-auto">
                 <div class="logo font-black text-2xl tracking-tight text-emerald-900">𝐴𝑙-𝑍𝑎𝑖𝑛 | Nona</div>
-                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest">حبيبة محمد والله.</div>
+                <div class="text-xs font-bold text-gray-400 uppercase tracking-widest pl-16">حبيبة محمد والله.</div>
             </header>
 
             <section class="min-h-[80vh] flex flex-col items-center justify-center px-4 relative overflow-hidden">
@@ -389,6 +422,27 @@
     </div>
 
     <script>
+        // دالة فتح وإغلاق القائمة
+        function toggleMenu() {
+            const menu = document.getElementById('side-menu');
+            const overlay = document.getElementById('menu-overlay');
+            const icon = document.querySelector('#menu-btn i');
+            
+            // إذا كانت القائمة مغلقة
+            if (menu.classList.contains('translate-y-full')) {
+                menu.classList.remove('translate-y-full');
+                overlay.classList.remove('opacity-0', 'pointer-events-none');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                // إذا كانت القائمة مفتوحة
+                menu.classList.add('translate-y-full');
+                overlay.classList.add('opacity-0', 'pointer-events-none');
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
+            }
+        }
+
         function clean(str) {
             return str.replace(/[٠-٩]/g, d => d.charCodeAt(0) - 1632).replace(/[^0-9]/g, "");
         }
@@ -511,4 +565,5 @@
     </script>
 </body>
 </html>
+
 
