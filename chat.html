@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فضفضة | لبنت الزين بس</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --pink: #E9B2B2;
+            --deep: #1A3C34;
+        }
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: #fdf2f8;
+            direction: rtl;
+            overflow-x: hidden;
+            /* توفير مساحة لشريط الإرسال الثابت في الأسفل */
+            padding-bottom: 140px; 
+        }
+        .blob {
+            position: fixed; border-radius: 50%; filter: blur(80px); z-index: 0; pointer-events: none;
+            animation: bfloat 12s infinite alternate;
+        }
+        @keyframes bfloat {
+            from { transform: translate(0,0) scale(1); }
+            to   { transform: translate(30px,40px) scale(1.1); }
+        }
+
+        /* شاشة الحماية */
+        #pass-screen {
+            position: fixed; inset: 0; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            background: #fdf2f8;
+        }
+        .pass-card {
+            background: rgba(255,255,255,0.55);
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255,255,255,0.6);
+            box-shadow: 0 20px 60px rgba(219,39,119,0.08);
+            padding: 50px 36px;
+            border-radius: 2.5rem;
+            text-align: center;
+            max-width: 420px; width: 90%;
+        }
+        #passInput {
+            width: 100%; padding: 16px; border-radius: 1.2rem;
+            border: 1.5px solid rgba(219,39,119,0.15);
+            background: rgba(255,255,255,0.85);
+            text-align: center; font-size: 20px; font-weight: 700;
+            color: var(--deep); outline: none;
+            font-family: 'Cairo', sans-serif;
+        }
+        #passInput:focus { border-color: #db2777; box-shadow: 0 0 20px rgba(219,39,119,0.12); }
+
+        /* بطاقة الرسالة */
+        .msg-card {
+            background: rgba(255,255,255,0.75);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255,255,255,0.55);
+            border-radius: 2rem;
+            box-shadow: 0 4px 30px rgba(219,39,119,0.07);
+            transition: transform 0.35s cubic-bezier(0.2,1,0.3,1), box-shadow 0.35s;
+            animation: slideUp 0.4s cubic-bezier(0.2,1,0.3,1) both;
+        }
+        
+        /* تنسيق خاص لرسايل بنت الزين */
+        .msg-card.bint-msg {
+            background: rgba(253, 232, 243, 0.85);
+            border: 1px solid rgba(244, 114, 182, 0.4);
+            border-right: 5px solid #f472b6;
+        }
+        /* تنسيق خاص لرسايل الزين */
+        .msg-card.zein-msg {
+            border-right: 5px solid #60a5fa;
+        }
+
+        .msg-card:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(219,39,119,0.13); }
+        @keyframes slideUp {
+            from { opacity:0; transform:translateY(20px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+
+        .new-badge {
+            background: linear-gradient(135deg,#db2777,#f9a8d4);
+            color: #fff; font-size: 10px; font-weight: 900;
+            padding: 2px 10px; border-radius: 100px;
+            letter-spacing: .05em;
+        }
+
+        .btn-reply {
+            color: #60a5fa; font-size: 12px; font-weight: 700;
+            background: rgba(96, 165, 250, 0.1); padding: 4px 10px;
+            border-radius: 100px; cursor: pointer; transition: all 0.2s;
+        }
+        .btn-reply:hover { background: rgba(96, 165, 250, 0.2); }
+
+        .quote-box-bint {
+            background: rgba(255, 255, 255, 0.5);
+            border-right: 3px solid #f472b6;
+            padding: 8px 12px;
+            border-radius: 0.5rem;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #4b5563;
+        }
+
+        /* زر الرجوع */
+        .back-btn {
+            position: fixed; top: 1.3rem; right: 1.3rem; z-index: 100;
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.5);
+            width: 48px; height: 48px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            color: var(--deep); font-size: 18px;
+            cursor: pointer; transition: transform 0.2s;
+            text-decoration: none;
+        }
+        .back-btn:hover { transform: scale(1.08); }
+
+        /* حقل الإرسال الثابت بالأسفل */
+        .bottom-send-area {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+            background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(219,39,119,0.1);
+            padding: 12px 16px;
+            box-shadow: 0 -4px 30px rgba(219,39,119,0.05);
+        }
+        .bottom-send-area textarea {
+            font-family: 'Cairo', sans-serif; resize: none;
+            width: 100%; border: 1px solid #fbcfe8; border-radius: 1.5rem;
+            padding: 12px 16px; outline: none; transition: all 0.2s;
+            background: rgba(255,255,255,0.9);
+        }
+        .bottom-send-area textarea:focus { border-color: #db2777; }
+        
+        .btn-send {
+            background: linear-gradient(45deg, #db2777, #f472b6);
+            color: white; border: none; border-radius: 50%;
+            width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(219,39,119,0.35);
+            cursor: pointer; transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .btn-send:hover { transform: scale(1.05); }
+        .btn-send:active { transform: scale(0.95); }
+
+        /* معاينة الرد */
+        #reply-preview {
+            background: #fdf2f8; border-right: 3px solid #db2777;
+            padding: 8px 12px; border-radius: 0.5rem; margin-bottom: 8px;
+            display: none; align-items: center; justify-content: space-between;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- بلوبات الخلفية -->
+<div class="blob w-80 h-80 bg-pink-200/50" style="top:-80px;right:-60px;"></div>
+<div class="blob w-64 h-64 bg-fuchsia-100/60" style="bottom:-40px;left:-40px;animation-delay:-3s;"></div>
+
+<!-- شاشة الباسورد -->
+<div id="pass-screen">
+    <div class="pass-card">
+        <div style="font-size:50px;color:#db2777;margin-bottom:16px;"><i class="fas fa-comment-dots"></i></div>
+        <h2 class="font-black text-2xl mb-2" style="color:var(--deep)">محادثتنا 💬</h2>
+        <p class="text-gray-400 text-sm mb-6">المكان ده ليكِ إنتِ بس يا بنت الزين</p>
+        <input type="password" id="passInput" placeholder="التاريخ السري" autocomplete="off">
+        <p id="err" class="text-red-400 text-sm font-bold mt-3 hidden">كلمة السر غلط ❤️</p>
+        <button onclick="checkPass()" class="mt-5 w-full py-4 rounded-2xl font-black text-white text-lg" style="background:linear-gradient(45deg,#db2777,#f472b6);box-shadow:0 4px 15px rgba(219,39,119,0.35);">
+            ادخلي يا روحي
+        </button>
+    </div>
+</div>
+
+<!-- الرجوع -->
+<a href="index.html" class="back-btn"><i class="fas fa-arrow-right"></i></a>
+
+<!-- المحتوى الرئيسي -->
+<div id="main" class="hidden relative z-10 max-w-2xl mx-auto px-4 py-8 pt-16">
+
+    <div class="text-center mb-8">
+        <div style="font-size:52px;margin-bottom:8px;">💬</div>
+        <h1 class="font-black text-3xl" style="color:var(--deep)">محادثتنا</h1>
+        <p class="text-gray-400 text-sm mt-2">كل كلامنا محفوظ هنا</p>
+    </div>
+
+    <!-- شات كامل (رسايل الزين وبنت الزين) -->
+    <div id="msgs-container" class="space-y-4">
+        <div class="text-center text-gray-300 text-sm py-8" id="empty-state">
+            <i class="fas fa-inbox text-4xl mb-3 block opacity-30"></i>
+            جاري تحميل المحادثة...
+        </div>
+    </div>
+
+</div>
+
+<!-- شريط الإرسال الثابت في الأسفل -->
+<div id="bottom-bar" class="hidden bottom-send-area max-w-2xl mx-auto">
+    <!-- معاينة الرسالة المُرد عليها -->
+    <div id="reply-preview">
+        <div class="text-xs text-gray-600 truncate max-w-[85%]">
+            <span class="font-bold text-pink-600 block mb-1">بتردي على الزين:</span>
+            <span id="reply-preview-text"></span>
+        </div>
+        <button onclick="cancelReply()" class="text-red-400 text-lg p-1"><i class="fas fa-times"></i></button>
+    </div>
+    
+    <div class="flex items-end gap-3">
+        <textarea id="replyText" rows="1" placeholder="اكتبي للزين هنا..." oninput="this.style.height = '';this.style.height = Math.min(this.scrollHeight, 100) + 'px'"></textarea>
+        <button onclick="sendReply()" class="btn-send">
+            <i class="fas fa-paper-plane text-xl rtl:-scale-x-100"></i>
+        </button>
+    </div>
+    <p id="reply-ok" class="text-green-500 text-xs font-bold mt-2 text-center hidden">وصلتني يا حبيبتي ❤️</p>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc, doc }
+        from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDtCTYW5ElROBbevs2xTDmFH0gsF8T15w8",
+        authDomain: "nona-8db9d.firebaseapp.com",
+        projectId: "nona-8db9d",
+        storageBucket: "nona-8db9d.firebasestorage.app",
+        messagingSenderId: "454953384040",
+        appId: "1:454953384040:web:156f2a5083a8937c59a3dd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+
+    let zeinMsgsData = [];
+    let bintMsgsData = [];
+    let currentReplyTo = null; // بيحفظ بيانات الرسالة اللي بتعمل ريبلاي عليها
+
+    // --- باسورد ---
+    function clean(s){ return s.replace(/[٠-٩]/g,d=>d.charCodeAt(0)-1632).replace(/[^0-9]/g,''); }
+    window.checkPass = function(){
+        const v = clean(document.getElementById('passInput').value);
+        if(v === '23102024'){
+            document.getElementById('pass-screen').style.display='none';
+            document.getElementById('main').classList.remove('hidden');
+            document.getElementById('bottom-bar').classList.remove('hidden');
+            initChat();
+        } else {
+            document.getElementById('err').classList.remove('hidden');
+        }
+    };
+    document.addEventListener('keypress', e=>{ if(e.key==='Enter' && document.getElementById('pass-screen').style.display !== 'none') window.checkPass(); });
+
+    // --- تجهيز الرد (لما تدوس على زرار رد) ---
+    window.prepareReply = function(id, text) {
+        currentReplyTo = { id: id, text: decodeURIComponent(text) };
+        document.getElementById('reply-preview-text').textContent = currentReplyTo.text;
+        document.getElementById('reply-preview').style.display = 'flex';
+        document.getElementById('replyText').focus();
+    };
+
+    // --- إلغاء الرد ---
+    window.cancelReply = function() {
+        currentReplyTo = null;
+        document.getElementById('reply-preview').style.display = 'none';
+        document.getElementById('reply-preview-text').textContent = '';
+    };
+
+    // --- إرسال رسالة بنت الزين ---
+    window.sendReply = async function(){
+        const textarea = document.getElementById('replyText');
+        const text = textarea.value.trim();
+        if(!text) return;
+
+        const payload = {
+            text, 
+            createdAt: serverTimestamp(), 
+            read: false,
+            repliedToId: currentReplyTo ? currentReplyTo.id : null,
+            repliedToText: currentReplyTo ? currentReplyTo.text : null
+        };
+
+        await addDoc(collection(db,'nona_replies'), payload);
+        
+        textarea.value='';
+        textarea.style.height = ''; // إرجاع حجم الصندوق للوضع الطبيعي
+        cancelReply(); // قفل نافذة المعاينة بعد الإرسال
+        
+        document.getElementById('reply-ok').classList.remove('hidden');
+        setTimeout(()=>document.getElementById('reply-ok').classList.add('hidden'),3000);
+    };
+
+    // --- تحميل وعرض الشات ---
+    function renderChat() {
+        const container = document.getElementById('msgs-container');
+        
+        // دمج الرسايل وترتيبهم (الأحدث فوق)
+        const allMsgs = [...zeinMsgsData, ...bintMsgsData].sort((a, b) => {
+            const timeA = a.data.createdAt?.toMillis() || Date.now();
+            const timeB = b.data.createdAt?.toMillis() || Date.now();
+            return timeB - timeA; 
+        });
+
+        if(allMsgs.length === 0){
+            container.innerHTML = '<div class="text-center text-gray-300 text-sm py-8"><i class="fas fa-heart text-4xl block mb-3 opacity-20" style="color:#db2777"></i>لسه مفيش رسايل يا بنت الزين.. استني 💕</div>';
+            return;
+        }
+
+        container.innerHTML = '';
+
+        allMsgs.forEach(msg => {
+            const data = msg.data;
+            const time = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'الآن';
+            
+            const card = document.createElement('div');
+            const encodedText = encodeURIComponent(data.text);
+
+            if(msg.type === 'zein') {
+                // رسالة الزين (أنت)
+                const isNew = !data.readByNona;
+                if(isNew) updateDoc(doc(db,'fad_messages',msg.id),{readByNona:true}); 
+
+                card.className = 'msg-card zein-msg p-5';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-sm" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">ز</div>
+                            <div>
+                                <p class="font-black text-sm" style="color:var(--deep)">الزين</p>
+                                <p class="text-xs text-gray-400">${time}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            ${isNew ? '<span class="new-badge">رسالة جديدة</span>' : ''}
+                            <button class="btn-reply" onclick="prepareReply('${msg.id}', '${encodedText}')"><i class="fas fa-reply"></i> رد</button>
+                        </div>
+                    </div>
+                    <p class="text-gray-700 leading-loose font-semibold text-sm whitespace-pre-wrap ml-10">${data.text}</p>
+                `;
+            } else {
+                // رسالة بنت الزين
+                
+                // عرض الاقتباس لو بترد على حاجة
+                let quoteHtml = '';
+                if(data.repliedToText) {
+                    quoteHtml = `
+                    <div class="quote-box-bint ml-10">
+                        <span class="text-pink-500 font-bold block mb-1">بتردي على الزين:</span>
+                        <div class="truncate max-w-full">${data.repliedToText}</div>
+                    </div>`;
+                }
+
+                card.className = 'msg-card bint-msg p-5';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-sm" style="background:linear-gradient(135deg,#db2777,#f9a8d4);">ب</div>
+                            <div>
+                                <p class="font-black text-sm text-pink-600">أنتِ</p>
+                                <p class="text-xs text-pink-400/80">${time}</p>
+                            </div>
+                        </div>
+                        ${data.read ? '<span class="text-[10px] text-pink-500 font-bold bg-white/50 px-2 py-1 rounded-full">👁 شافها</span>' : ''}
+                    </div>
+                    ${quoteHtml}
+                    <p class="text-gray-800 leading-loose font-bold text-sm whitespace-pre-wrap ml-10">${data.text}</p>
+                `;
+            }
+            container.appendChild(card);
+        });
+    }
+
+    function initChat() {
+        // الاستماع لرسايل الزين
+        onSnapshot(query(collection(db,'fad_messages')), snap => {
+            zeinMsgsData = snap.docs.map(d => ({ id: d.id, type: 'zein', data: d.data() }));
+            renderChat();
+        });
+
+        // الاستماع لرسايل بنت الزين
+        onSnapshot(query(collection(db,'nona_replies')), snap => {
+            bintMsgsData = snap.docs.map(d => ({ id: d.id, type: 'bint', data: d.data() }));
+            renderChat();
+        });
+    }
+</script>
+
+</body>
+</html>
