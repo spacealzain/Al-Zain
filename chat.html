@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فضفضة | لبنت الزين بس</title>
+    <title>Benty</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -227,7 +227,7 @@
 <!-- Firebase -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc, doc }
+    import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, updateDoc, doc }
         from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -304,11 +304,11 @@
     function renderChat() {
         const container = document.getElementById('msgs-container');
         
-        // دمج الرسايل وترتيبهم (الأحدث فوق)
+        // دمج الرسايل وترتيبهم (الأقدم فوق والجديد تحت)
         const allMsgs = [...zeinMsgsData, ...bintMsgsData].sort((a, b) => {
             const timeA = a.data.createdAt?.toMillis() || Date.now();
             const timeB = b.data.createdAt?.toMillis() || Date.now();
-            return timeB - timeA; 
+            return timeA - timeB; 
         });
 
         if(allMsgs.length === 0){
@@ -334,7 +334,7 @@
                 card.innerHTML = `
                     <div class="flex items-start justify-between mb-2">
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-sm" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);">ز</div>
+                            <img src="mohamed.jpg" class="w-8 h-8 rounded-full object-cover border-2 border-blue-200 shadow-sm" alt="الزين">
                             <div>
                                 <p class="font-black text-sm" style="color:var(--deep)">الزين</p>
                                 <p class="text-xs text-gray-400">${time}</p>
@@ -364,7 +364,7 @@
                 card.innerHTML = `
                     <div class="flex items-start justify-between mb-2">
                         <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-white font-black text-sm" style="background:linear-gradient(135deg,#db2777,#f9a8d4);">ب</div>
+                            <img src="nona.jpg" class="w-8 h-8 rounded-full object-cover border-2 border-pink-300 shadow-sm" alt="بنت الزين">
                             <div>
                                 <p class="font-black text-sm text-pink-600">أنتِ</p>
                                 <p class="text-xs text-pink-400/80">${time}</p>
@@ -378,6 +378,11 @@
             }
             container.appendChild(card);
         });
+
+        // النزول التلقائي للأسفل لرؤية أحدث رسالة
+        setTimeout(() => {
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }, 100);
     }
 
     function initChat() {
