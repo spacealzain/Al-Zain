@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -156,6 +157,11 @@
         }
         .pulse-mic { animation: pulse-mic 2s infinite ease-in-out; }
 
+        .chat-btn {
+            background: linear-gradient(45deg, #8b5cf6 0%, #c084fc 100%);
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+        }
+
         .valentine-btn {
             background: linear-gradient(45deg, #ff758c 0%, #ff7eb3 100%);
             box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
@@ -218,6 +224,12 @@
             </div>
 
             <div class="flex flex-col gap-4 max-w-md mx-auto w-full">
+                <!-- زر الشات الجديد -->
+                <a href="chat.html" class="chat-btn text-white font-bold py-4 px-6 rounded-2xl flex items-center gap-3 transform transition hover:scale-105 active:scale-95 no-underline shadow-md">
+                    <i class="fas fa-comments text-xl"></i>
+                    <span>شات</span>
+                </a>
+
                 <a href="valentine" class="valentine-btn text-white font-bold py-4 px-6 rounded-2xl flex items-center gap-3 transform transition hover:scale-105 active:scale-95 no-underline shadow-md">
                     <i class="fas fa-gift text-xl"></i>
                     <span>عالم الفالنتين</span>
@@ -228,7 +240,6 @@
                     <span>العيد والعيدية</span>
                 </a>
             </div>
-            <!-- تم حذف زر الكلمة الأخيرة من هنا بناءً على طلبك -->
         </div>
 
         <main id="main-content" class="pb-20">
@@ -558,5 +569,3 @@
     </script>
 </body>
 </html>
-
-
