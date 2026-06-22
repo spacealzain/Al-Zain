@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم | فضفضة</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body { font-family: 'Cairo', sans-serif; background: #0f172a; color: #e2e8f0; direction: rtl; }
+
+        /* شاشة لوجين */
+        #login-screen {
+            position: fixed; inset:0; z-index:9999;
+            display:flex; align-items:center; justify-content:center;
+            background: #0f172a;
+        }
+        .login-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1.5rem;
+            padding: 40px 32px;
+            max-width: 380px; width:90%; text-align:center;
+        }
+        input[type="password"], input[type="email"], input[type="text"], textarea {
+            font-family: 'Cairo', sans-serif;
+            background: #0f172a;
+            border: 1.5px solid #334155;
+            color: #e2e8f0;
+            border-radius: .8rem;
+            padding: 12px 16px;
+            outline: none;
+            width: 100%;
+            transition: border-color 0.2s;
+        }
+        input:focus, textarea:focus { border-color: #3b82f6; }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+            color: #fff; border:none; border-radius: 1rem;
+            padding: 12px 24px; font-weight: 900; font-family: 'Cairo', sans-serif;
+            cursor: pointer; width:100%; font-size: 16px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(59,130,246,0.3);
+        }
+        .btn-primary:hover { transform: translateY(-2px); }
+
+        .stat-card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1.2rem;
+            padding: 20px;
+        }
+
+        .msg-item {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 1.2rem;
+            padding: 18px;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+        .msg-item.my-msg {
+            border-right: 3px solid #3b82f6;
+        }
+        .msg-item.bint-msg {
+            border-right: 3px solid #f472b6; 
+            background: #1e293b;
+        }
+
+        .reply-bubble {
+            background: #0f172a;
+            border-radius: .8rem;
+            padding: 10px 14px;
+            margin-top: 10px;
+        }
+        .quote-box {
+            background: rgba(255,255,255,0.05);
+            border-right: 3px solid #f472b6;
+            padding: 8px 12px;
+            border-radius: 0.5rem;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #cbd5e1;
+            opacity: 0.8;
+        }
+
+        .badge-new { background: #db2777; color:#fff; font-size:10px; font-weight:900; padding: 2px 8px; border-radius:100px; }
+        .badge-read { background: #334155; color:#94a3b8; font-size:10px; font-weight:700; padding: 2px 8px; border-radius:100px; }
+
+        .tab-btn { 
+            padding: 8px 20px; border-radius: 100px; 
+            font-weight: 700; cursor:pointer; transition: all 0.2s;
+            border: 1.5px solid #334155; color: #94a3b8;
+        }
+        .tab-btn.active { background: #3b82f6; border-color: #3b82f6; color:#fff; }
+
+        /* الأزرار المصغرة (تعديل - مسح) */
+        .action-btn {
+            background: transparent; color: #94a3b8; border: none;
+            cursor: pointer; transition: color 0.2s; font-size: 12px;
+            margin-right: 10px;
+        }
+        .action-btn:hover.edit { color: #3b82f6; }
+        .action-btn:hover.delete { color: #ef4444; }
+
+        /* نافذة التعديل المنبثقة */
+        #edit-modal {
+            position: fixed; inset: 0; z-index: 10000;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: #1e293b; border: 1px solid #334155;
+            border-radius: 1.5rem; padding: 24px;
+            width: 90%; max-width: 400px;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<!-- شاشة اللوجين -->
+<div id="login-screen">
+    <div class="login-card">
+        <div style="font-size:40px;color:#3b82f6;margin-bottom:12px;"><i class="fas fa-shield-alt"></i></div>
+        <h2 class="font-black text-xl mb-1">لوحة التحكم</h2>
+        <p class="text-slate-400 text-sm mb-6">للزّين بس 🔒</p>
+        <input type="email" id="adminEmail" placeholder="البريد الإلكتروني" class="mb-4" autocomplete="off">
+        <input type="password" id="adminPass" placeholder="كلمة المرور" class="mb-4" autocomplete="off">
+        <p id="login-err" class="text-red-400 text-sm mb-3 hidden">بيانات الدخول غير صحيحة</p>
+        <button class="btn-primary flex items-center justify-center gap-2" id="loginBtn" onclick="adminLogin()">
+            دخول <i class="fas fa-arrow-left"></i>
+        </button>
+    </div>
+</div>
+
+<!-- مودال تعديل الرسالة -->
+<div id="edit-modal">
+    <div class="modal-content shadow-2xl shadow-blue-500/10">
+        <h3 class="font-black mb-4 text-white text-lg">✏️ تعديل الرسالة</h3>
+        <textarea id="editMsgText" rows="5" class="mb-4"></textarea>
+        <input type="hidden" id="editMsgId">
+        <div class="flex gap-3">
+            <button class="btn-primary !w-auto flex-1" onclick="saveEdit()">حفظ التعديل</button>
+            <button class="!bg-slate-700 !text-white btn-primary !w-auto flex-1 !shadow-none" onclick="closeEditModal()">إلغاء</button>
+        </div>
+    </div>
+</div>
+
+<!-- لوحة التحكم -->
+<div id="dashboard" class="hidden max-w-2xl mx-auto px-4 py-8">
+
+    <!-- هيدر -->
+    <div class="flex items-center justify-between mb-8">
+        <div>
+            <h1 class="font-black text-2xl">لوحة الفضفضة 💬</h1>
+            <p class="text-slate-400 text-sm">أرسل رسايل لبنت الزين</p>
+        </div>
+        <div class="flex items-center gap-4">
+            <button onclick="adminLogout()" class="text-slate-400 hover:text-red-400 transition text-sm">
+                <i class="fas fa-sign-out-alt"></i> خروج
+            </button>
+            <div id="stats-badge" class="stat-card text-center min-w-[80px] !py-3">
+                <p class="font-black text-2xl text-blue-400" id="unread-count">-</p>
+                <p class="text-xs text-slate-400">رسايل جديدة</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- تابز -->
+    <div class="flex gap-3 mb-6">
+        <button class="tab-btn active" onclick="showTab('send', this)">إرسال رسالة</button>
+        <button class="tab-btn" onclick="showTab('chat', this)">المحادثة كاملة</button>
+    </div>
+
+    <!-- تاب: إرسال -->
+    <div id="tab-send">
+        <div class="stat-card">
+            <h3 class="font-black mb-4 text-blue-300">✍️ رسالة جديدة لبنت الزين</h3>
+            <textarea id="newMsg" rows="6" placeholder="اكتب اللي في بالك...&#10;&#10;رسالتك هتظهرلها في صفحة الفضفضة فور ما تبعتها 💕"></textarea>
+            <button class="btn-primary mt-4" onclick="sendMsg()">
+                <i class="fas fa-paper-plane ml-2"></i> ابعت
+            </button>
+            <p id="send-ok" class="text-green-400 text-sm font-bold mt-3 text-center hidden">✅ وصلتلها يا بشمهندس!</p>
+            <p id="send-err" class="text-red-400 text-sm font-bold mt-3 text-center hidden">❌ حصل خطأ، جرب تاني</p>
+        </div>
+    </div>
+
+    <!-- تاب: المحادثة كاملة -->
+    <div id="tab-chat" class="hidden space-y-4">
+        <div id="chat-container">
+            <div class="text-center text-slate-500 py-8">
+                <i class="fas fa-comments text-3xl mb-3 block opacity-30"></i>
+                جاري التحميل...
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc, doc, deleteDoc }
+        from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
+        from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyDtCTYW5ElROBbevs2xTDmFH0gsF8T15w8",
+        authDomain: "nona-8db9d.firebaseapp.com",
+        projectId: "nona-8db9d",
+        storageBucket: "nona-8db9d.firebasestorage.app",
+        messagingSenderId: "454953384040",
+        appId: "1:454953384040:web:156f2a5083a8937c59a3dd"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+    const auth = getAuth(app);
+
+    let adminMsgsData = [];
+    let bintMsgsData = [];
+    let unsubscribeAdmin = null;
+    let unsubscribeBint = null;
+
+    // ---- نظام تسجيل الدخول (Firebase Auth) ----
+    
+    // مراقبة حالة تسجيل الدخول
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            // مسجل دخول بالفعل
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('dashboard').classList.remove('hidden');
+            initDashboard();
+        } else {
+            // مش مسجل دخول
+            document.getElementById('login-screen').style.display = 'flex';
+            document.getElementById('dashboard').classList.add('hidden');
+            
+            // إيقاف جلب البيانات لو عمل تسجيل خروج
+            if(unsubscribeAdmin) unsubscribeAdmin();
+            if(unsubscribeBint) unsubscribeBint();
+        }
+    });
+
+    window.adminLogin = async function() {
+        const email = document.getElementById('adminEmail').value.trim();
+        const pass = document.getElementById('adminPass').value;
+        const errLabel = document.getElementById('login-err');
+        const btn = document.getElementById('loginBtn');
+
+        if(!email || !pass) return;
+
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...';
+        errLabel.classList.add('hidden');
+
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+            // الـ onAuthStateChanged هيتولى مهمة فتح الداشبورد
+            btn.innerHTML = 'دخول <i class="fas fa-arrow-left"></i>';
+        } catch (error) {
+            btn.innerHTML = 'دخول <i class="fas fa-arrow-left"></i>';
+            errLabel.classList.remove('hidden');
+        }
+    };
+
+    window.adminLogout = async function() {
+        try {
+            await signOut(auth);
+        } catch (error) {
+            alert("حدث خطأ أثناء تسجيل الخروج");
+        }
+    };
+
+    document.addEventListener('keypress', e => { 
+        if(e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
+            window.adminLogin(); 
+        }
+    });
+
+    // ---- تابز ----
+    window.showTab = function(name, btn){
+        ['send','chat'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
+        document.getElementById('tab-'+name).classList.remove('hidden');
+        document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+    };
+
+    // ---- إرسال رسالة ----
+    window.sendMsg = async function(){
+        const text = document.getElementById('newMsg').value.trim();
+        if(!text) return;
+        const ok  = document.getElementById('send-ok');
+        const err = document.getElementById('send-err');
+        try {
+            await addDoc(collection(db,'fad_messages'),{
+                text,
+                createdAt: serverTimestamp(),
+                readByNona: false
+            });
+            document.getElementById('newMsg').value = '';
+            ok.classList.remove('hidden');
+            err.classList.add('hidden');
+            setTimeout(() => ok.classList.add('hidden'), 3000);
+            
+            // تحويل للتاب بتاع الشات عشان يشوفها
+            document.querySelectorAll('.tab-btn')[1].click(); 
+        } catch(e) {
+            err.classList.remove('hidden');
+        }
+    };
+
+    // ---- تعديل الرسالة ----
+    window.openEditModal = function(id, text) {
+        document.getElementById('editMsgId').value = id;
+        document.getElementById('editMsgText').value = decodeURIComponent(text);
+        document.getElementById('edit-modal').style.display = 'flex';
+    };
+
+    window.closeEditModal = function() {
+        document.getElementById('edit-modal').style.display = 'none';
+    };
+
+    window.saveEdit = async function() {
+        const id = document.getElementById('editMsgId').value;
+        const newText = document.getElementById('editMsgText').value.trim();
+        if(!newText || !id) return;
+
+        try {
+            await updateDoc(doc(db, 'fad_messages', id), { text: newText });
+            closeEditModal();
+        } catch(e) {
+            alert('حصلت مشكلة أثناء التعديل');
+        }
+    };
+
+    // ---- مسح الرسالة ----
+    window.deleteMsg = async function(id, collectionName) {
+        if(confirm('متأكد إنك عايز تمسح الرسالة دي خالص؟ (هتختفي من عند بنت الزين كمان)')) {
+            try {
+                await deleteDoc(doc(db, collectionName, id));
+            } catch(e) {
+                alert('حصلت مشكلة أثناء المسح');
+            }
+        }
+    };
+
+    // ---- تحميل وعرض المحادثة ----
+    function renderChat() {
+        const c = document.getElementById('chat-container');
+        
+        // دمج الرسايل وترتيبهم من الأحدث للأقدم
+        const allMsgs = [...adminMsgsData, ...bintMsgsData].sort((a, b) => {
+            const timeA = a.data.createdAt?.toMillis() || Date.now();
+            const timeB = b.data.createdAt?.toMillis() || Date.now();
+            return timeB - timeA;
+        });
+
+        if(allMsgs.length === 0){
+            c.innerHTML = '<div class="text-center text-slate-500 py-8"><i class="fas fa-inbox text-3xl mb-3 block opacity-30"></i>المحادثة فاضية</div>';
+            return;
+        }
+
+        c.innerHTML = '';
+        let unreadCount = 0;
+
+        allMsgs.forEach(msg => {
+            const data = msg.data;
+            const time = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'الآن';
+            
+            const el = document.createElement('div');
+            
+            if(msg.type === 'bint') {
+                // رسالة بنت الزين
+                const isNew = !data.read;
+                if(isNew) {
+                    unreadCount++;
+                    updateDoc(doc(db,'nona_replies',msg.id),{read:true});
+                }
+
+                // عرض الاقتباس
+                let quoteHtml = '';
+                if(data.repliedToText) {
+                    quoteHtml = `
+                    <div class="quote-box">
+                        <span class="text-pink-400 font-bold block mb-1">ترد على رسالتك:</span>
+                        <div class="truncate max-w-full">${data.repliedToText}</div>
+                    </div>`;
+                }
+
+                el.className = 'msg-item bint-msg';
+                el.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm" style="background:linear-gradient(135deg,#db2777,#f472b6);color:#fff;">ب</div>
+                            <p class="font-black text-sm text-pink-400">بنت الزين</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <p class="text-xs text-slate-500">${time}</p>
+                            <button class="action-btn delete" onclick="deleteMsg('${msg.id}', 'nona_replies')" title="مسح رسالتها"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <div class="reply-bubble">
+                        ${quoteHtml}
+                        <p class="text-sm leading-loose text-slate-200 whitespace-pre-wrap">${data.text}</p>
+                    </div>
+                `;
+            } else {
+                // رسالتك (الزين)
+                const encodedText = encodeURIComponent(data.text);
+                el.className = 'msg-item my-msg';
+                el.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;">ز</div>
+                            <p class="font-black text-sm text-blue-400">الزين (أنت)</p>
+                            
+                            <button class="action-btn edit" onclick="openEditModal('${msg.id}', '${encodedText}')" title="تعديل"><i class="fas fa-edit"></i></button>
+                            <button class="action-btn delete" onclick="deleteMsg('${msg.id}', 'fad_messages')" title="مسح"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="flex flex-col items-end gap-1">
+                            <p class="text-xs text-slate-500">${time}</p>
+                            ${data.readByNona ? '<span class="badge-read">👁 شافتها</span>' : '<span class="badge-new">لسه مشافتهاش</span>'}
+                        </div>
+                    </div>
+                    <div class="reply-bubble !border-none !bg-[#1e293b]">
+                        <p class="text-sm leading-loose text-blue-100 whitespace-pre-wrap">${data.text}</p>
+                    </div>
+                `;
+            }
+            c.appendChild(el);
+        });
+
+        document.getElementById('unread-count').textContent = unreadCount;
+    }
+
+    function initDashboard(){
+        // استماع لرسائل بنت الزين
+        unsubscribeBint = onSnapshot(query(collection(db,'nona_replies')), snap => {
+            bintMsgsData = snap.docs.map(d => ({ id: d.id, type: 'bint', data: d.data() }));
+            renderChat();
+        });
+
+        // استماع لرسائلك (الزين)
+        unsubscribeAdmin = onSnapshot(query(collection(db,'fad_messages')), snap => {
+            adminMsgsData = snap.docs.map(d => ({ id: d.id, type: 'admin', data: d.data() }));
+            renderChat();
+        });
+    }
+</script>
+
+</body>
+</html>
