@@ -90,6 +90,9 @@
             color: #cbd5e1;
             opacity: 0.8;
         }
+        .quote-box.admin-quote {
+            border-color: #3b82f6; /* لون أزرق لاقتباسات الزين */
+        }
 
         .badge-new { background: #db2777; color:#fff; font-size:10px; font-weight:900; padding: 2px 8px; border-radius:100px; }
         .badge-read { background: #334155; color:#94a3b8; font-size:10px; font-weight:700; padding: 2px 8px; border-radius:100px; }
@@ -101,14 +104,17 @@
         }
         .tab-btn.active { background: #3b82f6; border-color: #3b82f6; color:#fff; }
 
-        /* الأزرار المصغرة (تعديل - مسح) */
+        /* الأزرار المصغرة (تعديل - مسح - ريأكت - ريبلاي) */
         .action-btn {
             background: transparent; color: #94a3b8; border: none;
-            cursor: pointer; transition: color 0.2s; font-size: 12px;
-            margin-right: 10px;
+            cursor: pointer; transition: color 0.2s, transform 0.2s; font-size: 13px;
+            margin-right: 12px;
         }
         .action-btn:hover.edit { color: #3b82f6; }
         .action-btn:hover.delete { color: #ef4444; }
+        .action-btn:hover.react { color: #ec4899; transform: scale(1.1); }
+        .action-btn.reacted { color: #ec4899; }
+        .action-btn:hover.reply { color: #10b981; }
 
         /* نافذة التعديل المنبثقة */
         #edit-modal {
@@ -121,6 +127,17 @@
             background: #1e293b; border: 1px solid #334155;
             border-radius: 1.5rem; padding: 24px;
             width: 90%; max-width: 400px;
+        }
+
+        /* مربع الرد في خانة الإرسال */
+        .reply-context {
+            background: rgba(59, 130, 246, 0.1);
+            border-right: 3px solid #3b82f6;
+            padding: 12px 15px;
+            border-radius: 0.8rem;
+            margin-bottom: 15px;
+            display: none;
+            border: 1px solid #334155;
         }
     </style>
 </head>
@@ -184,6 +201,20 @@
     <div id="tab-send">
         <div class="stat-card">
             <h3 class="font-black mb-4 text-blue-300">✍️ رسالة جديدة لبنت الزين</h3>
+            
+            <!-- قسم الرد (يظهر فقط عند الضغط على زر الرد) -->
+            <div id="reply-context" class="reply-context">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="text-blue-400 font-bold text-xs block mb-1"><i class="fas fa-reply"></i> بترد على رسالة نونه:</span>
+                        <p id="reply-quote-text" class="text-sm text-slate-300 truncate max-w-[250px]"></p>
+                    </div>
+                    <button onclick="cancelReply()" class="text-slate-500 hover:text-red-400" title="إلغاء الرد"><i class="fas fa-times"></i></button>
+                </div>
+            </div>
+            <input type="hidden" id="replyTargetId">
+            <input type="hidden" id="replyTargetText">
+
             <textarea id="newMsg" rows="6" placeholder="اكتب اللي في بالك...&#10;&#10;رسالتك هتظهرلها في صفحة الفضفضة فور ما تبعتها 💕"></textarea>
             <button class="btn-primary mt-4" onclick="sendMsg()">
                 <i class="fas fa-paper-plane ml-2"></i> ابعت
@@ -230,21 +261,15 @@
     let unsubscribeAdmin = null;
     let unsubscribeBint = null;
 
-    // ---- نظام تسجيل الدخول (Firebase Auth) ----
-    
-    // مراقبة حالة تسجيل الدخول
+    // ---- نظام تسجيل الدخول ----
     onAuthStateChanged(auth, (user) => {
         if (user) {
-            // مسجل دخول بالفعل
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('dashboard').classList.remove('hidden');
             initDashboard();
         } else {
-            // مش مسجل دخول
             document.getElementById('login-screen').style.display = 'flex';
             document.getElementById('dashboard').classList.add('hidden');
-            
-            // إيقاف جلب البيانات لو عمل تسجيل خروج
             if(unsubscribeAdmin) unsubscribeAdmin();
             if(unsubscribeBint) unsubscribeBint();
         }
@@ -263,7 +288,6 @@
 
         try {
             await signInWithEmailAndPassword(auth, email, pass);
-            // الـ onAuthStateChanged هيتولى مهمة فتح الداشبورد
             btn.innerHTML = 'دخول <i class="fas fa-arrow-left"></i>';
         } catch (error) {
             btn.innerHTML = 'دخول <i class="fas fa-arrow-left"></i>';
@@ -293,27 +317,68 @@
         btn.classList.add('active');
     };
 
+    // ---- نظام الرد (Reply) ----
+    window.prepareReply = function(id, text) {
+        const decodedText = decodeURIComponent(text);
+        document.getElementById('replyTargetId').value = id;
+        document.getElementById('replyTargetText').value = decodedText;
+        document.getElementById('reply-quote-text').textContent = decodedText;
+        document.getElementById('reply-context').style.display = 'block';
+
+        // الانتقال لتاب الإرسال أوتوماتيكياً
+        document.querySelectorAll('.tab-btn')[0].click();
+        document.getElementById('newMsg').focus();
+    };
+
+    window.cancelReply = function() {
+        document.getElementById('replyTargetId').value = '';
+        document.getElementById('replyTargetText').value = '';
+        document.getElementById('reply-context').style.display = 'none';
+    };
+
     // ---- إرسال رسالة ----
     window.sendMsg = async function(){
         const text = document.getElementById('newMsg').value.trim();
         if(!text) return;
         const ok  = document.getElementById('send-ok');
         const err = document.getElementById('send-err');
+        
+        // جلب بيانات الرد لو موجودة
+        const replyId = document.getElementById('replyTargetId').value;
+        const replyText = document.getElementById('replyTargetText').value;
+
+        const payload = {
+            text,
+            createdAt: serverTimestamp(),
+            readByNona: false
+        };
+
+        if(replyId) {
+            payload.repliedToId = replyId;
+            payload.repliedToText = replyText;
+        }
+
         try {
-            await addDoc(collection(db,'fad_messages'),{
-                text,
-                createdAt: serverTimestamp(),
-                readByNona: false
-            });
+            await addDoc(collection(db,'fad_messages'), payload);
             document.getElementById('newMsg').value = '';
+            cancelReply(); // إلغاء وضع الرد بعد الإرسال
+            
             ok.classList.remove('hidden');
             err.classList.add('hidden');
             setTimeout(() => ok.classList.add('hidden'), 3000);
             
-            // تحويل للتاب بتاع الشات عشان يشوفها
             document.querySelectorAll('.tab-btn')[1].click(); 
         } catch(e) {
             err.classList.remove('hidden');
+        }
+    };
+
+    // ---- نظام الريأكت (التفاعل) ----
+    window.toggleReaction = async function(id, currentStatus) {
+        try {
+            await updateDoc(doc(db, 'nona_replies', id), { reacted: !currentStatus });
+        } catch(e) {
+            console.error("خطأ في التفاعل", e);
         }
     };
 
@@ -356,7 +421,6 @@
     function renderChat() {
         const c = document.getElementById('chat-container');
         
-        // دمج الرسايل وترتيبهم من الأحدث للأقدم
         const allMsgs = [...adminMsgsData, ...bintMsgsData].sort((a, b) => {
             const timeA = a.data.createdAt?.toMillis() || Date.now();
             const timeB = b.data.createdAt?.toMillis() || Date.now();
@@ -385,7 +449,6 @@
                     updateDoc(doc(db,'nona_replies',msg.id),{read:true});
                 }
 
-                // عرض الاقتباس
                 let quoteHtml = '';
                 if(data.repliedToText) {
                     quoteHtml = `
@@ -395,6 +458,12 @@
                     </div>`;
                 }
 
+                // تجهيز حالة الريأكت (القلب)
+                const isReacted = !!data.reacted;
+                const heartIcon = isReacted ? 'fas fa-heart' : 'far fa-heart';
+                const heartClass = isReacted ? 'action-btn reacted' : 'action-btn react';
+                const encodedTextForReply = encodeURIComponent(data.text);
+
                 el.className = 'msg-item bint-msg';
                 el.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
@@ -402,8 +471,10 @@
                             <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm" style="background:linear-gradient(135deg,#db2777,#f472b6);color:#fff;">ب</div>
                             <p class="font-black text-sm text-pink-400">بنت الزين</p>
                         </div>
-                        <div class="flex items-center gap-3">
-                            <p class="text-xs text-slate-500">${time}</p>
+                        <div class="flex items-center gap-1">
+                            <p class="text-xs text-slate-500 ml-3">${time}</p>
+                            <button class="${heartClass}" onclick="toggleReaction('${msg.id}', ${isReacted})" title="${isReacted ? 'إلغاء التفاعل' : 'تفاعل بـ قلب'}"><i class="${heartIcon}"></i></button>
+                            <button class="action-btn reply" onclick="prepareReply('${msg.id}', '${encodedTextForReply}')" title="رد عليها"><i class="fas fa-reply"></i></button>
                             <button class="action-btn delete" onclick="deleteMsg('${msg.id}', 'nona_replies')" title="مسح رسالتها"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
@@ -415,6 +486,17 @@
             } else {
                 // رسالتك (الزين)
                 const encodedText = encodeURIComponent(data.text);
+                
+                // إضافة مربع الاقتباس لو أنت كنت بترد على رسالة ليها
+                let myQuoteHtml = '';
+                if(data.repliedToText) {
+                    myQuoteHtml = `
+                    <div class="quote-box admin-quote">
+                        <span class="text-blue-400 font-bold block mb-1"><i class="fas fa-reply text-[10px]"></i> بترد على رسالتها:</span>
+                        <div class="truncate max-w-full text-slate-300">${data.repliedToText}</div>
+                    </div>`;
+                }
+
                 el.className = 'msg-item my-msg';
                 el.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
@@ -431,6 +513,7 @@
                         </div>
                     </div>
                     <div class="reply-bubble !border-none !bg-[#1e293b]">
+                        ${myQuoteHtml}
                         <p class="text-sm leading-loose text-blue-100 whitespace-pre-wrap">${data.text}</p>
                     </div>
                 `;
@@ -458,3 +541,4 @@
 
 </body>
 </html>
+
