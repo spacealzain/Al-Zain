@@ -13,31 +13,23 @@
     <script src="https://cdn.tailwindcss.com"></script>
 
     <style>
-        body { font-family: 'Cairo', sans-serif; background: #0f172a; color: #e2e8f0; direction: rtl; }
+        body { font-family: 'Cairo', sans-serif; background: #0f172a; color: #e2e8f0; direction: rtl; scroll-behavior: smooth; }
 
-        /* شاشة لوجين */
         #login-screen {
             position: fixed; inset:0; z-index:9999;
             display:flex; align-items:center; justify-content:center;
             background: #0f172a;
         }
         .login-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 1.5rem;
-            padding: 40px 32px;
+            background: #1e293b; border: 1px solid #334155;
+            border-radius: 1.5rem; padding: 40px 32px;
             max-width: 380px; width:90%; text-align:center;
         }
         input[type="password"], input[type="email"], input[type="text"], textarea {
-            font-family: 'Cairo', sans-serif;
-            background: #0f172a;
-            border: 1.5px solid #334155;
-            color: #e2e8f0;
-            border-radius: .8rem;
-            padding: 12px 16px;
-            outline: none;
-            width: 100%;
-            transition: border-color 0.2s;
+            font-family: 'Cairo', sans-serif; background: #0f172a;
+            border: 1.5px solid #334155; color: #e2e8f0;
+            border-radius: .8rem; padding: 12px 16px; outline: none;
+            width: 100%; transition: border-color 0.2s;
         }
         input:focus, textarea:focus { border-color: #3b82f6; }
 
@@ -51,48 +43,22 @@
         }
         .btn-primary:hover { transform: translateY(-2px); }
 
-        .stat-card {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 1.2rem;
-            padding: 20px;
-        }
+        .stat-card { background: #1e293b; border: 1px solid #334155; border-radius: 1.2rem; padding: 20px; }
 
         .msg-item {
-            background: #1e293b;
-            border: 1px solid #334155;
-            border-radius: 1.2rem;
-            padding: 18px;
-            transition: border-color 0.2s;
-            margin-bottom: 12px;
+            background: #1e293b; border: 1px solid #334155; border-radius: 1.2rem;
+            padding: 18px; transition: border-color 0.2s; margin-bottom: 12px;
         }
-        .msg-item.my-msg {
-            border-right: 3px solid #3b82f6;
-        }
-        .msg-item.bint-msg {
-            border-right: 3px solid #f472b6; 
-            background: #1e293b;
-        }
+        .msg-item.my-msg { border-right: 3px solid #3b82f6; }
+        .msg-item.bint-msg { border-right: 3px solid #f472b6; background: #1e293b; }
 
-        .reply-bubble {
-            background: #0f172a;
-            border-radius: .8rem;
-            padding: 10px 14px;
-            margin-top: 10px;
-        }
+        .reply-bubble { background: #0f172a; border-radius: .8rem; padding: 10px 14px; margin-top: 10px; }
         .quote-box {
-            background: rgba(255,255,255,0.05);
-            border-right: 3px solid #f472b6;
-            padding: 8px 12px;
-            border-radius: 0.5rem;
-            margin-bottom: 8px;
-            font-size: 12px;
-            color: #cbd5e1;
-            opacity: 0.8;
+            background: rgba(255,255,255,0.05); border-right: 3px solid #f472b6;
+            padding: 8px 12px; border-radius: 0.5rem; margin-bottom: 8px;
+            font-size: 12px; color: #cbd5e1; opacity: 0.8;
         }
-        .quote-box.admin-quote {
-            border-color: #3b82f6; /* لون أزرق لاقتباسات الزين */
-        }
+        .quote-box.admin-quote { border-color: #3b82f6; }
 
         .badge-new { background: #db2777; color:#fff; font-size:10px; font-weight:900; padding: 2px 8px; border-radius:100px; }
         .badge-read { background: #334155; color:#94a3b8; font-size:10px; font-weight:700; padding: 2px 8px; border-radius:100px; }
@@ -104,11 +70,9 @@
         }
         .tab-btn.active { background: #3b82f6; border-color: #3b82f6; color:#fff; }
 
-        /* الأزرار المصغرة (تعديل - مسح - ريأكت - ريبلاي) */
         .action-btn {
             background: transparent; color: #94a3b8; border: none;
-            cursor: pointer; transition: color 0.2s, transform 0.2s; font-size: 13px;
-            margin-right: 12px;
+            cursor: pointer; transition: color 0.2s, transform 0.2s; font-size: 13px; margin-right: 12px;
         }
         .action-btn:hover.edit { color: #3b82f6; }
         .action-btn:hover.delete { color: #ef4444; }
@@ -116,28 +80,33 @@
         .action-btn.reacted { color: #ec4899; }
         .action-btn:hover.reply { color: #10b981; }
 
-        /* نافذة التعديل المنبثقة */
         #edit-modal {
             position: fixed; inset: 0; z-index: 10000;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(5px);
+            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px);
             display: none; align-items: center; justify-content: center;
         }
-        .modal-content {
-            background: #1e293b; border: 1px solid #334155;
-            border-radius: 1.5rem; padding: 24px;
-            width: 90%; max-width: 400px;
+        .modal-content { background: #1e293b; border: 1px solid #334155; border-radius: 1.5rem; padding: 24px; width: 90%; max-width: 400px; }
+
+        .reply-context {
+            background: rgba(59, 130, 246, 0.1); border-right: 3px solid #3b82f6;
+            padding: 12px 15px; border-radius: 0.8rem; margin-bottom: 15px;
+            display: none; border: 1px solid #334155;
         }
 
-        /* مربع الرد في خانة الإرسال */
-        .reply-context {
-            background: rgba(59, 130, 246, 0.1);
-            border-right: 3px solid #3b82f6;
-            padding: 12px 15px;
-            border-radius: 0.8rem;
-            margin-bottom: 15px;
-            display: none;
-            border: 1px solid #334155;
+        /* زر النزول للأسفل الذكي */
+        #scroll-down-btn {
+            position: fixed; bottom: 30px; left: 30px; z-index: 90;
+            background: #1e293b; border: 1px solid #334155; color: #3b82f6;
+            width: 50px; height: 50px; border-radius: 50%;
+            display: none; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s;
+        }
+        #scroll-down-btn:hover { transform: scale(1.1); background: #3b82f6; color: white; }
+        .unread-badge {
+            position: absolute; top: -5px; right: -5px;
+            background: #ef4444; color: white; font-size: 11px; font-weight: bold;
+            width: 22px; height: 22px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
         }
     </style>
 </head>
@@ -158,7 +127,7 @@
     </div>
 </div>
 
-<!-- مودال تعديل الرسالة -->
+<!-- مودال التعديل -->
 <div id="edit-modal">
     <div class="modal-content shadow-2xl shadow-blue-500/10">
         <h3 class="font-black mb-4 text-white text-lg">✏️ تعديل الرسالة</h3>
@@ -174,7 +143,6 @@
 <!-- لوحة التحكم -->
 <div id="dashboard" class="hidden max-w-2xl mx-auto px-4 py-8">
 
-    <!-- هيدر -->
     <div class="flex items-center justify-between mb-8">
         <div>
             <h1 class="font-black text-2xl">لوحة الفضفضة 💬</h1>
@@ -186,7 +154,7 @@
             </button>
             <div id="stats-badge" class="stat-card text-center min-w-[80px] !py-3">
                 <p class="font-black text-2xl text-blue-400" id="unread-count">-</p>
-                <p class="text-xs text-slate-400">رسايل جديدة</p>
+                <p class="text-xs text-slate-400">رسايل مشفتهاش</p>
             </div>
         </div>
     </div>
@@ -202,43 +170,44 @@
         <div class="stat-card">
             <h3 class="font-black mb-4 text-blue-300">✍️ رسالة جديدة لبنت الزين</h3>
             
-            <!-- قسم الرد (يظهر فقط عند الضغط على زر الرد) -->
             <div id="reply-context" class="reply-context">
                 <div class="flex justify-between items-start">
                     <div>
                         <span class="text-blue-400 font-bold text-xs block mb-1"><i class="fas fa-reply"></i> بترد على رسالة نونه:</span>
                         <p id="reply-quote-text" class="text-sm text-slate-300 truncate max-w-[250px]"></p>
                     </div>
-                    <button onclick="cancelReply()" class="text-slate-500 hover:text-red-400" title="إلغاء الرد"><i class="fas fa-times"></i></button>
+                    <button onclick="cancelReply()" class="text-slate-500 hover:text-red-400"><i class="fas fa-times"></i></button>
                 </div>
             </div>
             <input type="hidden" id="replyTargetId">
             <input type="hidden" id="replyTargetText">
 
-            <textarea id="newMsg" rows="6" placeholder="اكتب اللي في بالك...&#10;&#10;رسالتك هتظهرلها في صفحة الفضفضة فور ما تبعتها 💕"></textarea>
+            <textarea id="newMsg" rows="6" placeholder="اكتب اللي في بالك..."></textarea>
             <button class="btn-primary mt-4" onclick="sendMsg()">
                 <i class="fas fa-paper-plane ml-2"></i> ابعت
             </button>
             <p id="send-ok" class="text-green-400 text-sm font-bold mt-3 text-center hidden">✅ وصلتلها يا بشمهندس!</p>
-            <p id="send-err" class="text-red-400 text-sm font-bold mt-3 text-center hidden">❌ حصل خطأ، جرب تاني</p>
         </div>
     </div>
 
-    <!-- تاب: المحادثة كاملة -->
+    <!-- تاب: المحادثة -->
     <div id="tab-chat" class="hidden space-y-4">
-        <div id="chat-container">
-            <div class="text-center text-slate-500 py-8">
-                <i class="fas fa-comments text-3xl mb-3 block opacity-30"></i>
-                جاري التحميل...
-            </div>
+        <div id="chat-container" class="pb-10">
+            <div class="text-center text-slate-500 py-8">جاري التحميل...</div>
         </div>
     </div>
 
 </div>
 
+<!-- زر النزول للأسفل -->
+<div id="scroll-down-btn" onclick="scrollToBottom()">
+    <i class="fas fa-chevron-down"></i>
+    <div id="admin-badge" class="unread-badge hidden">0</div>
+</div>
+
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
-    import { getFirestore, collection, query, orderBy, onSnapshot, addDoc, serverTimestamp, updateDoc, doc, deleteDoc }
+    import { getFirestore, collection, query, onSnapshot, addDoc, serverTimestamp, updateDoc, doc, deleteDoc }
         from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } 
         from "https://www.gstatic.com/firebasejs/12.15.0/firebase-auth.js";
@@ -261,7 +230,40 @@
     let unsubscribeAdmin = null;
     let unsubscribeBint = null;
 
-    // ---- نظام تسجيل الدخول ----
+    // --- نظام قراءة الرسائل عند الرؤية فقط (Intersection Observer) ---
+    const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
+    const viewObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const el = entry.target;
+                if (el.dataset.type === 'bint' && el.dataset.read === 'false') {
+                    // أول ما تشوف رسالتها، بتتعلم مقروءة في الداتا بيز
+                    updateDoc(doc(db, 'nona_replies', el.dataset.id), { read: true });
+                    el.dataset.read = 'true';
+                    observer.unobserve(el);
+                }
+            }
+        });
+    }, observerOptions);
+
+    // --- التمرير (Scroll) والزر العائم ---
+    function isNearBottom() {
+        return (document.documentElement.scrollHeight - document.documentElement.scrollTop - document.documentElement.clientHeight) < 200;
+    }
+
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('scroll-down-btn');
+        if (!isNearBottom()) {
+            btn.style.display = 'flex';
+        } else {
+            btn.style.display = 'none';
+        }
+    });
+
+    window.scrollToBottom = function() {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             document.getElementById('login-screen').style.display = 'none';
@@ -276,56 +278,26 @@
     });
 
     window.adminLogin = async function() {
-        const email = document.getElementById('adminEmail').value.trim();
+        const email = document.getElementById('adminEmail').value;
         const pass = document.getElementById('adminPass').value;
-        const errLabel = document.getElementById('login-err');
-        const btn = document.getElementById('loginBtn');
-
-        if(!email || !pass) return;
-
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...';
-        errLabel.classList.add('hidden');
-
-        try {
-            await signInWithEmailAndPassword(auth, email, pass);
-            btn.innerHTML = 'دخول <i class="fas fa-arrow-left"></i>';
-        } catch (error) {
-            btn.innerHTML = 'دخول <i class="fas fa-arrow-left"></i>';
-            errLabel.classList.remove('hidden');
-        }
+        try { await signInWithEmailAndPassword(auth, email, pass); } 
+        catch (e) { document.getElementById('login-err').classList.remove('hidden'); }
     };
+    window.adminLogout = () => signOut(auth);
 
-    window.adminLogout = async function() {
-        try {
-            await signOut(auth);
-        } catch (error) {
-            alert("حدث خطأ أثناء تسجيل الخروج");
-        }
-    };
-
-    document.addEventListener('keypress', e => { 
-        if(e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') {
-            window.adminLogin(); 
-        }
-    });
-
-    // ---- تابز ----
     window.showTab = function(name, btn){
         ['send','chat'].forEach(t => document.getElementById('tab-'+t).classList.add('hidden'));
         document.getElementById('tab-'+name).classList.remove('hidden');
         document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
         btn.classList.add('active');
+        if(name === 'chat') setTimeout(() => window.scrollToBottom(), 100);
     };
 
-    // ---- نظام الرد (Reply) ----
     window.prepareReply = function(id, text) {
-        const decodedText = decodeURIComponent(text);
         document.getElementById('replyTargetId').value = id;
-        document.getElementById('replyTargetText').value = decodedText;
-        document.getElementById('reply-quote-text').textContent = decodedText;
+        document.getElementById('replyTargetText').value = decodeURIComponent(text);
+        document.getElementById('reply-quote-text').textContent = decodeURIComponent(text);
         document.getElementById('reply-context').style.display = 'block';
-
-        // الانتقال لتاب الإرسال أوتوماتيكياً
         document.querySelectorAll('.tab-btn')[0].click();
         document.getElementById('newMsg').focus();
     };
@@ -336,90 +308,32 @@
         document.getElementById('reply-context').style.display = 'none';
     };
 
-    // ---- إرسال رسالة ----
     window.sendMsg = async function(){
         const text = document.getElementById('newMsg').value.trim();
         if(!text) return;
-        const ok  = document.getElementById('send-ok');
-        const err = document.getElementById('send-err');
-        
-        // جلب بيانات الرد لو موجودة
         const replyId = document.getElementById('replyTargetId').value;
         const replyText = document.getElementById('replyTargetText').value;
 
-        const payload = {
-            text,
-            createdAt: serverTimestamp(),
-            readByNona: false
-        };
+        const payload = { text, createdAt: serverTimestamp(), readByNona: false };
+        if(replyId) { payload.repliedToId = replyId; payload.repliedToText = replyText; }
 
-        if(replyId) {
-            payload.repliedToId = replyId;
-            payload.repliedToText = replyText;
-        }
-
-        try {
-            await addDoc(collection(db,'fad_messages'), payload);
-            document.getElementById('newMsg').value = '';
-            cancelReply(); // إلغاء وضع الرد بعد الإرسال
-            
-            ok.classList.remove('hidden');
-            err.classList.add('hidden');
-            setTimeout(() => ok.classList.add('hidden'), 3000);
-            
-            document.querySelectorAll('.tab-btn')[1].click(); 
-        } catch(e) {
-            err.classList.remove('hidden');
-        }
+        await addDoc(collection(db,'fad_messages'), payload);
+        document.getElementById('newMsg').value = '';
+        cancelReply();
+        document.querySelectorAll('.tab-btn')[1].click(); 
+        setTimeout(() => window.scrollToBottom(), 200);
     };
 
-    // ---- نظام الريأكت (التفاعل) ----
-    window.toggleReaction = async function(id, currentStatus) {
-        try {
-            await updateDoc(doc(db, 'nona_replies', id), { reacted: !currentStatus });
-        } catch(e) {
-            console.error("خطأ في التفاعل", e);
-        }
-    };
+    window.toggleReaction = (id, status) => updateDoc(doc(db, 'nona_replies', id), { reacted: !status });
+    
+    window.openEditModal = (id, txt) => { document.getElementById('editMsgId').value=id; document.getElementById('editMsgText').value=decodeURIComponent(txt); document.getElementById('edit-modal').style.display='flex'; };
+    window.closeEditModal = () => document.getElementById('edit-modal').style.display='none';
+    window.saveEdit = () => { updateDoc(doc(db, 'fad_messages', document.getElementById('editMsgId').value), { text: document.getElementById('editMsgText').value }); window.closeEditModal(); };
+    window.deleteMsg = (id, col) => { if(confirm('متأكد إنك عايز تمسح؟')) deleteDoc(doc(db, col, id)); };
 
-    // ---- تعديل الرسالة ----
-    window.openEditModal = function(id, text) {
-        document.getElementById('editMsgId').value = id;
-        document.getElementById('editMsgText').value = decodeURIComponent(text);
-        document.getElementById('edit-modal').style.display = 'flex';
-    };
-
-    window.closeEditModal = function() {
-        document.getElementById('edit-modal').style.display = 'none';
-    };
-
-    window.saveEdit = async function() {
-        const id = document.getElementById('editMsgId').value;
-        const newText = document.getElementById('editMsgText').value.trim();
-        if(!newText || !id) return;
-
-        try {
-            await updateDoc(doc(db, 'fad_messages', id), { text: newText });
-            closeEditModal();
-        } catch(e) {
-            alert('حصلت مشكلة أثناء التعديل');
-        }
-    };
-
-    // ---- مسح الرسالة ----
-    window.deleteMsg = async function(id, collectionName) {
-        if(confirm('متأكد إنك عايز تمسح الرسالة دي خالص؟ (هتختفي من عند بنت الزين كمان)')) {
-            try {
-                await deleteDoc(doc(db, collectionName, id));
-            } catch(e) {
-                alert('حصلت مشكلة أثناء المسح');
-            }
-        }
-    };
-
-    // ---- تحميل وعرض المحادثة ----
     function renderChat() {
         const c = document.getElementById('chat-container');
+        const wasNearBottom = isNearBottom();
         
         const allMsgs = [...adminMsgsData, ...bintMsgsData].sort((a, b) => {
             const timeA = a.data.createdAt?.toMillis() || Date.now();
@@ -427,118 +341,74 @@
             return timeB - timeA;
         });
 
-        if(allMsgs.length === 0){
-            c.innerHTML = '<div class="text-center text-slate-500 py-8"><i class="fas fa-inbox text-3xl mb-3 block opacity-30"></i>المحادثة فاضية</div>';
-            return;
-        }
-
         c.innerHTML = '';
         let unreadCount = 0;
 
         allMsgs.forEach(msg => {
             const data = msg.data;
-            const time = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString('ar-EG',{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : 'الآن';
-            
+            const time = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleDateString('ar-EG',{hour:'2-digit',minute:'2-digit'}) : 'الآن';
             const el = document.createElement('div');
             
             if(msg.type === 'bint') {
-                // رسالة بنت الزين
-                const isNew = !data.read;
-                if(isNew) {
-                    unreadCount++;
-                    updateDoc(doc(db,'nona_replies',msg.id),{read:true});
-                }
-
-                let quoteHtml = '';
-                if(data.repliedToText) {
-                    quoteHtml = `
-                    <div class="quote-box">
-                        <span class="text-pink-400 font-bold block mb-1">ترد على رسالتك:</span>
-                        <div class="truncate max-w-full">${data.repliedToText}</div>
-                    </div>`;
-                }
-
-                // تجهيز حالة الريأكت (القلب)
+                if(!data.read) unreadCount++;
+                
+                let quoteHtml = data.repliedToText ? `<div class="quote-box"><span class="text-pink-400 font-bold block mb-1">ترد على رسالتك:</span><div class="truncate">${data.repliedToText}</div></div>` : '';
                 const isReacted = !!data.reacted;
-                const heartIcon = isReacted ? 'fas fa-heart' : 'far fa-heart';
-                const heartClass = isReacted ? 'action-btn reacted' : 'action-btn react';
-                const encodedTextForReply = encodeURIComponent(data.text);
+                const encodedText = encodeURIComponent(data.text);
 
                 el.className = 'msg-item bint-msg';
+                // أضفت خصائص المراقب (Observer) هنا
+                el.dataset.id = msg.id;
+                el.dataset.type = 'bint';
+                el.dataset.read = data.read || false;
+
                 el.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm" style="background:linear-gradient(135deg,#db2777,#f472b6);color:#fff;">ب</div>
-                            <p class="font-black text-sm text-pink-400">بنت الزين</p>
-                        </div>
+                        <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm" style="background:linear-gradient(135deg,#db2777,#f472b6);color:#fff;">ب</div><p class="font-black text-sm text-pink-400">بنت الزين</p></div>
                         <div class="flex items-center gap-1">
                             <p class="text-xs text-slate-500 ml-3">${time}</p>
-                            <button class="${heartClass}" onclick="toggleReaction('${msg.id}', ${isReacted})" title="${isReacted ? 'إلغاء التفاعل' : 'تفاعل بـ قلب'}"><i class="${heartIcon}"></i></button>
-                            <button class="action-btn reply" onclick="prepareReply('${msg.id}', '${encodedTextForReply}')" title="رد عليها"><i class="fas fa-reply"></i></button>
-                            <button class="action-btn delete" onclick="deleteMsg('${msg.id}', 'nona_replies')" title="مسح رسالتها"><i class="fas fa-trash"></i></button>
+                            <button class="action-btn ${isReacted ? 'reacted' : 'react'}" onclick="toggleReaction('${msg.id}', ${isReacted})"><i class="${isReacted ? 'fas' : 'far'} fa-heart"></i></button>
+                            <button class="action-btn reply" onclick="prepareReply('${msg.id}', '${encodedText}')"><i class="fas fa-reply"></i></button>
+                            <button class="action-btn delete" onclick="deleteMsg('${msg.id}', 'nona_replies')"><i class="fas fa-trash"></i></button>
                         </div>
                     </div>
-                    <div class="reply-bubble">
-                        ${quoteHtml}
-                        <p class="text-sm leading-loose text-slate-200 whitespace-pre-wrap">${data.text}</p>
-                    </div>
+                    <div class="reply-bubble">${quoteHtml}<p class="text-sm leading-loose text-slate-200 whitespace-pre-wrap">${data.text}</p></div>
                 `;
             } else {
-                // رسالتك (الزين)
-                const encodedText = encodeURIComponent(data.text);
-                
-                // إضافة مربع الاقتباس لو أنت كنت بترد على رسالة ليها
-                let myQuoteHtml = '';
-                if(data.repliedToText) {
-                    myQuoteHtml = `
-                    <div class="quote-box admin-quote">
-                        <span class="text-blue-400 font-bold block mb-1"><i class="fas fa-reply text-[10px]"></i> بترد على رسالتها:</span>
-                        <div class="truncate max-w-full text-slate-300">${data.repliedToText}</div>
-                    </div>`;
-                }
-
+                let myQuoteHtml = data.repliedToText ? `<div class="quote-box admin-quote"><span class="text-blue-400 font-bold block mb-1"><i class="fas fa-reply text-[10px]"></i> بترد على رسالتها:</span><div class="truncate text-slate-300">${data.repliedToText}</div></div>` : '';
                 el.className = 'msg-item my-msg';
                 el.innerHTML = `
                     <div class="flex justify-between items-center mb-2">
-                        <div class="flex items-center gap-2">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;">ز</div>
-                            <p class="font-black text-sm text-blue-400">الزين (أنت)</p>
-                            
-                            <button class="action-btn edit" onclick="openEditModal('${msg.id}', '${encodedText}')" title="تعديل"><i class="fas fa-edit"></i></button>
-                            <button class="action-btn delete" onclick="deleteMsg('${msg.id}', 'fad_messages')" title="مسح"><i class="fas fa-trash"></i></button>
-                        </div>
-                        <div class="flex flex-col items-end gap-1">
-                            <p class="text-xs text-slate-500">${time}</p>
-                            ${data.readByNona ? '<span class="badge-read">👁 شافتها</span>' : '<span class="badge-new">لسه مشافتهاش</span>'}
-                        </div>
+                        <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff;">ز</div><p class="font-black text-sm text-blue-400">الزين (أنت)</p>
+                        <button class="action-btn edit" onclick="openEditModal('${msg.id}', '${encodeURIComponent(data.text)}')"><i class="fas fa-edit"></i></button>
+                        <button class="action-btn delete" onclick="deleteMsg('${msg.id}', 'fad_messages')"><i class="fas fa-trash"></i></button></div>
+                        <div class="flex flex-col items-end gap-1"><p class="text-xs text-slate-500">${time}</p>
+                        ${data.readByNona ? '<span class="badge-read">👁 شافتها</span>' : '<span class="badge-new">لسه مشافتهاش</span>'}</div>
                     </div>
-                    <div class="reply-bubble !border-none !bg-[#1e293b]">
-                        ${myQuoteHtml}
-                        <p class="text-sm leading-loose text-blue-100 whitespace-pre-wrap">${data.text}</p>
-                    </div>
+                    <div class="reply-bubble !border-none !bg-[#1e293b]">${myQuoteHtml}<p class="text-sm leading-loose text-blue-100 whitespace-pre-wrap">${data.text}</p></div>
                 `;
             }
             c.appendChild(el);
+            
+            // تفعيل المراقبة للرسائل الغير مقروءة لبنت الزين
+            if(msg.type === 'bint' && !data.read) { viewObserver.observe(el); }
         });
 
+        // تحديث أرقام الرسايل الجديدة
         document.getElementById('unread-count').textContent = unreadCount;
+        const badge = document.getElementById('admin-badge');
+        if(unreadCount > 0 && !wasNearBottom) { badge.classList.remove('hidden'); badge.textContent = unreadCount; } 
+        else { badge.classList.add('hidden'); }
+
+        // النزول التلقائي فقط لو كان أصلاً تحت
+        if(wasNearBottom) setTimeout(() => window.scrollToBottom(), 100);
     }
 
     function initDashboard(){
-        // استماع لرسائل بنت الزين
-        unsubscribeBint = onSnapshot(query(collection(db,'nona_replies')), snap => {
-            bintMsgsData = snap.docs.map(d => ({ id: d.id, type: 'bint', data: d.data() }));
-            renderChat();
-        });
-
-        // استماع لرسائلك (الزين)
-        unsubscribeAdmin = onSnapshot(query(collection(db,'fad_messages')), snap => {
-            adminMsgsData = snap.docs.map(d => ({ id: d.id, type: 'admin', data: d.data() }));
-            renderChat();
-        });
+        unsubscribeBint = onSnapshot(query(collection(db,'nona_replies')), snap => { bintMsgsData = snap.docs.map(d => ({ id: d.id, type: 'bint', data: d.data() })); renderChat(); });
+        unsubscribeAdmin = onSnapshot(query(collection(db,'fad_messages')), snap => { adminMsgsData = snap.docs.map(d => ({ id: d.id, type: 'admin', data: d.data() })); renderChat(); });
     }
 </script>
 
 </body>
 </html>
-
